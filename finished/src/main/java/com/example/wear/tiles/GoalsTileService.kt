@@ -67,9 +67,7 @@ class GoalsTileService : TileProviderService() {
     private val serviceScope = CoroutineScope(Dispatchers.IO)
 
     // TODO: Build a Tile.
-    override fun onTileRequest(
-        requestParams: TileRequest
-    ) = serviceScope.future {
+    override fun onTileRequest(requestParams: TileRequest) = serviceScope.future {
 
         // Retrieves progress value to populate the Tile.
         val goalProgress = GoalsRepository.getGoalProgress()
