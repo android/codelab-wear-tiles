@@ -35,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.guava.future
 
+// TODO: Review Constants.
 // Updating this version triggers a new call to onResourcesRequest(). This is useful for dynamic
 // resources, the contents of which change even though their id stays the same (e.g. a graph).
 // In this sample, our resources are all fixed, so we use a constant value.
@@ -46,6 +47,12 @@ private val BUTTON_SIZE = dp(48f)
 private val BUTTON_RADIUS = dp(24f)
 private val BUTTON_PADDING = dp(12f)
 private val VERTICAL_SPACING_BUTTON = dp(8f)
+
+// text size
+private val TEXT_SIZE = sp(44f)
+
+// Complete degrees for a circle (relates to [Arc] component)
+private const val ARC_TOTAL_DEGREES = 360f
 
 // identifiers
 private const val ID_IMAGE_START_RUN = "image_start_run"
@@ -59,18 +66,27 @@ class GoalsTileService : TileProviderService() {
     // For coroutines, use a custom scope we can cancel when the service is destroyed
     private val serviceScope = CoroutineScope(Dispatchers.IO)
 
+    // TODO: Build a Tile.
     override fun onTileRequest(
         requestParams: TileRequest
     ) = serviceScope.future {
+
+        // Retrieves progress value to populate the Tile.
         val goalProgress = GoalsRepository.getGoalProgress()
+        // Retrieves font styles for any text in the Tile.
         val fontStyles = FontStyles.withDeviceParameters(requestParams.deviceParameters)
+
+        // Creates Tile.
         Tile.builder()
+            // Sets the resource version required for this tile (when onResourcesRequest() called,
+            // it will look for the resource that matches this version).
             .setResourcesVersion(RESOURCES_VERSION)
             // Creates a timeline to hold one or more tile entries for a specific time periods.
             .setTimeline(
                 Timeline.builder().addTimelineEntry(
                     TimelineEntry.builder().setLayout(
                         Layout.builder().setRoot(
+                            // Creates the root [Box] [LayoutElement]
                             layout(goalProgress, fontStyles)
                         )
                     )
@@ -78,66 +94,97 @@ class GoalsTileService : TileProviderService() {
             ).build()
     }
 
+    // TODO: Supply resources (graphics) for the Tile.
     override fun onResourcesRequest(requestParams: ResourcesRequest) = serviceScope.future {
         Resources.builder()
             .setVersion(RESOURCES_VERSION)
             .addIdToImageMapping(
                 ID_IMAGE_START_RUN,
-                ImageResource.builder().setAndroidResourceByResid(
-                    AndroidImageResourceByResId.builder()
-                        .setResourceId(R.drawable.ic_run)
-                        .build()
-                )
+                ImageResource.builder()
+                    .setAndroidResourceByResid(
+                        AndroidImageResourceByResId.builder()
+                            .setResourceId(R.drawable.ic_run)
+                            .build()
+                    )
             )
             .build()
     }
 
+    // TODO: Review onDestroy() - cancellation of the serviceScope
     override fun onDestroy() {
         super.onDestroy()
         // Cleans up the coroutine
         serviceScope.cancel()
     }
 
+    // TODO: Create root Box layout and content.
+    // Creates a simple [Box] container that lays out is children one over the other. In our case,
+    // a [Arc] that shows progress on top of a [Column] that includes the current steps [Text],
+    // the total steps [Text], a [Spacer], and a running icon [Image].
     private fun layout(goalProgress: GoalProgress, fontStyles: FontStyles) =
         Box.builder()
+            // Adds an [Arc] via local function.
             .addContent(progressArc(goalProgress.percentage))
+            // TODO: Add Column containing the rest of the data.
+            // Adds a [Column] containing the two [Text] objects, a [Spacer], and a [Image].
             .addContent(
                 Column.builder()
-                    .addContent(currentStepsText(goalProgress.current.toString(), fontStyles))
+                    // Adds a [Text] via local function.
+                    .addContent(
+                        currentStepsText(goalProgress.current.toString(), fontStyles)
+                    )
+                    // Adds a [Text] via local function.
                     .addContent(
                         totalStepsText(
                             resources.getString(R.string.goal, goalProgress.goal),
                             fontStyles
                         )
                     )
+                    // TODO: Add Spacer and Image representations of our step graphic.
+                    // Adds a [Spacer].
                     .addContent(Spacer.builder().setHeight(VERTICAL_SPACING_BUTTON))
+                    // Adds an [Image] via local function.
                     .addContent(startRunButton())
             )
 
-    private fun progressArc(percentage: Float) =
-        Arc.builder()
+
+    // TODO: Create a function that constructs an Arc representation of the current step progress.
+    // Creates an [Arc] representing current progress towards steps goal.
+    private fun progressArc(percentage: Float): Arc.Builder {
+        return Arc.builder()
             .addContent(
                 ArcLine.builder()
-                    .setLength(degrees(percentage * 360f))
-                    .setColor(
-                        argb(ContextCompat.getColor(this, R.color.primary))
-                    )
+                    // Uses degrees() helper to build an [AngularDimension] which represents progress.
+                    .setLength(degrees(percentage * ARC_TOTAL_DEGREES))
+                    .setColor(argb(ContextCompat.getColor(this, R.color.primary)))
                     .setThickness(PROGRESS_BAR_THICKNESS)
             )
+            // Aligns the contents of this container relative to anchor_angle.
+            // ARC_ANCHOR_START - Anchors at the start of the elements. This will cause elements
+            // added to an arc to begin at the given anchor_angle, and sweep around to the right.
             .setAnchorType(ARC_ANCHOR_START)
+    }
 
-    private fun currentStepsText(current: String, fontStyles: FontStyles) =
-        Text.builder()
+
+    // TODO: Create functions that construct/stylize Text representations of the step count & goal.
+    // Creates a [Text] with current step count and stylizes it.
+    private fun currentStepsText(current: String, fontStyles: FontStyles): Text.Builder {
+        return Text.builder()
             .setText(current)
-            .setFontStyle(FontStyle.builder().setSize(sp(44f)).build())
+            .setFontStyle(FontStyle.builder().setSize(TEXT_SIZE).build())
             .setFontStyle(fontStyles.display2())
+    }
 
+    // Creates a [Text] with total step count goal and stylizes it.
     private fun totalStepsText(goal: String, fontStyles: FontStyles) = Text.builder()
         .setText(goal)
-        .setFontStyle(FontStyle.builder().setSize(sp(44f)).build())
+        .setFontStyle(FontStyle.builder().setSize(TEXT_SIZE).build())
         .setFontStyle(fontStyles.title3())
 
-    // Layout for an icon button that refreshes the screen
+
+
+    // TODO: Create a function that constructs/stylizes a clickable Image of a running icon.
+    // Creates a running icon [Image] that's also a button to refresh the tile.
     private fun startRunButton() =
         Image.builder()
             .setWidth(BUTTON_SIZE)

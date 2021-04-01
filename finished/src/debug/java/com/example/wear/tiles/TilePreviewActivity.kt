@@ -32,6 +32,8 @@ class TilePreviewActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val rootLayout = findViewById<FrameLayout>(R.id.tile_container)
+
+        // TODO: Review creation of Tile for Preview.
         tileManager = TileManager(
             context = this,
             component = ComponentName(this, GoalsTileService::class.java),
