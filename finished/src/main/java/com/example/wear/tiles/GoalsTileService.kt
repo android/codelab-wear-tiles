@@ -76,9 +76,10 @@ class GoalsTileService : TileProviderService() {
 
         // Creates Tile.
         Tile.builder()
-            // Sets the resource version required for this tile (when onResourcesRequest() called,
-            // it will look for the resource that matches this version).
+            // If there are any graphics/images defined in the Tile's layout, the system will
+            // retrieve them via onResourcesRequest() and match them with this version number.
             .setResourcesVersion(RESOURCES_VERSION)
+
             // Creates a timeline to hold one or more tile entries for a specific time periods.
             .setTimeline(
                 Timeline.builder().addTimelineEntry(
@@ -123,6 +124,7 @@ class GoalsTileService : TileProviderService() {
         Box.builder()
             // Adds an [Arc] via local function.
             .addContent(progressArc(goalProgress.percentage))
+
             // TODO: Add Column containing the rest of the data.
             // Adds a [Column] containing the two [Text] objects, a [Spacer], and a [Image].
             .addContent(
@@ -202,10 +204,12 @@ class GoalsTileService : TileProviderService() {
                             .setCorner(Corner.builder().setRadius(BUTTON_RADIUS))
                             .setColor(argb(ContextCompat.getColor(this, R.color.primaryDark)))
                     )
+                    // TODO: Add click (START)
                     .setClickable(
                         Clickable.builder()
                             .setId(ID_CLICK_START_RUN)
                             .setOnClick(ActionBuilders.LoadAction.builder())
                     )
+                    // TODO: Add click (END)
             )
 }

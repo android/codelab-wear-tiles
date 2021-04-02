@@ -18,4 +18,6 @@
     <string name="tile_description">Codelab testing app</string>
     <string name="fitness_tile_label">Step progress</string>
     <string name="goal">/ %d steps</string>
+
+    <string name="placeholder_text">Time to create a tile!</string>
 </resources>

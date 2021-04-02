@@ -15,4 +15,5 @@
   -->
 <resources>
     <color name="primary">#C58AF9</color>
+    <color name="primaryDark">#3B294B</color>
 </resources>
