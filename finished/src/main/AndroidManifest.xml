@@ -19,6 +19,7 @@
     <!-- Indicate that this application is meant to run on a Wear OS Device. -->
     <uses-feature android:name="android.hardware.type.watch" />
 
+    <!-- TODO: Review service -->
     <application
         android:allowBackup="false"
         android:label="@string/app_name"

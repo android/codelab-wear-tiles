@@ -30,6 +30,7 @@
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
 
+        <!-- TODO: Review service -->
         <service
             android:name="com.example.wear.tiles.GoalsTileService"
             android:label="@string/fitness_tile_label"
