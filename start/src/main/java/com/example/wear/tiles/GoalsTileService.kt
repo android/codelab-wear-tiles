@@ -46,10 +46,7 @@ private val PROGRESS_BAR_THICKNESS = dp(6f)
 private val BUTTON_SIZE = dp(48f)
 private val BUTTON_RADIUS = dp(24f)
 private val BUTTON_PADDING = dp(12f)
-private val VERTICAL_SPACING_BUTTON = dp(8f)
-
-// text size
-private val TEXT_SIZE = sp(44f)
+private val VERTICAL_SPACING_HEIGHT = dp(8f)
 
 // Complete degrees for a circle (relates to [Arc] component)
 private const val ARC_TOTAL_DEGREES = 360f

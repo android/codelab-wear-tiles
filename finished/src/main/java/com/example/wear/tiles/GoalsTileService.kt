@@ -21,7 +21,6 @@ import androidx.wear.tiles.builders.*
 import androidx.wear.tiles.builders.ColorBuilders.argb
 import androidx.wear.tiles.builders.DimensionBuilders.degrees
 import androidx.wear.tiles.builders.DimensionBuilders.dp
-import androidx.wear.tiles.builders.DimensionBuilders.sp
 import androidx.wear.tiles.builders.LayoutElementBuilders.*
 import androidx.wear.tiles.builders.ModifiersBuilders.*
 import androidx.wear.tiles.builders.ResourceBuilders.*
@@ -46,10 +45,7 @@ private val PROGRESS_BAR_THICKNESS = dp(6f)
 private val BUTTON_SIZE = dp(48f)
 private val BUTTON_RADIUS = dp(24f)
 private val BUTTON_PADDING = dp(12f)
-private val VERTICAL_SPACING_BUTTON = dp(8f)
-
-// text size
-private val TEXT_SIZE = sp(44f)
+private val VERTICAL_SPACING_HEIGHT = dp(8f)
 
 // Complete degrees for a circle (relates to [Arc] component)
 private const val ARC_TOTAL_DEGREES = 360f
@@ -103,7 +99,6 @@ class GoalsTileService : TileProviderService() {
                     .setAndroidResourceByResid(
                         AndroidImageResourceByResId.builder()
                             .setResourceId(R.drawable.ic_run)
-                            .build()
                     )
             )
             .build()
@@ -117,7 +112,7 @@ class GoalsTileService : TileProviderService() {
     }
 
     // TODO: Create root Box layout and content.
-    // Creates a simple [Box] container that lays out is children one over the other. In our case,
+    // Creates a simple [Box] container that lays out its children one over the other. In our case,
     // a [Arc] that shows progress on top of a [Column] that includes the current steps [Text],
     // the total steps [Text], a [Spacer], and a running icon [Image].
     private fun layout(goalProgress: GoalProgress, fontStyles: FontStyles) =
@@ -142,7 +137,7 @@ class GoalsTileService : TileProviderService() {
                     )
                     // TODO: Add Spacer and Image representations of our step graphic.
                     // Adds a [Spacer].
-                    .addContent(Spacer.builder().setHeight(VERTICAL_SPACING_BUTTON))
+                    .addContent(Spacer.builder().setHeight(VERTICAL_SPACING_HEIGHT))
                     // Adds an [Image] via local function.
                     .addContent(startRunButton())
             )
@@ -171,14 +166,12 @@ class GoalsTileService : TileProviderService() {
     private fun currentStepsText(current: String, fontStyles: FontStyles): Text.Builder {
         return Text.builder()
             .setText(current)
-            .setFontStyle(FontStyle.builder().setSize(TEXT_SIZE).build())
             .setFontStyle(fontStyles.display2())
     }
 
     // Creates a [Text] with total step count goal and stylizes it.
     private fun totalStepsText(goal: String, fontStyles: FontStyles) = Text.builder()
         .setText(goal)
-        .setFontStyle(FontStyle.builder().setSize(TEXT_SIZE).build())
         .setFontStyle(fontStyles.title3())
 
 
