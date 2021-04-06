@@ -112,9 +112,9 @@ class GoalsTileService : TileProviderService() {
     }
 
     // TODO: Create root Box layout and content.
-    // Creates a simple [Box] container that lays out its children one over the other. In our case,
-    // a [Arc] that shows progress on top of a [Column] that includes the current steps [Text],
-    // the total steps [Text], a [Spacer], and a running icon [Image].
+    // Creates a simple [Box] container that lays out its children one over the other. In our
+    // case, a [Arc] that shows progress on top of a [Column] that includes the current steps
+    // [Text], the total steps [Text], a [Spacer], and a running icon [Image].
     private fun layout(goalProgress: GoalProgress, fontStyles: FontStyles) =
         Box.builder()
             // Adds an [Arc] via local function.
@@ -141,38 +141,36 @@ class GoalsTileService : TileProviderService() {
                     // Adds an [Image] via local function.
                     .addContent(startRunButton())
             )
-
+            .build()
 
     // TODO: Create a function that constructs an Arc representation of the current step progress.
     // Creates an [Arc] representing current progress towards steps goal.
-    private fun progressArc(percentage: Float): Arc.Builder {
-        return Arc.builder()
-            .addContent(
-                ArcLine.builder()
-                    // Uses degrees() helper to build an [AngularDimension] which represents progress.
-                    .setLength(degrees(percentage * ARC_TOTAL_DEGREES))
-                    .setColor(argb(ContextCompat.getColor(this, R.color.primary)))
-                    .setThickness(PROGRESS_BAR_THICKNESS)
-            )
-            // Aligns the contents of this container relative to anchor_angle.
-            // ARC_ANCHOR_START - Anchors at the start of the elements. This will cause elements
-            // added to an arc to begin at the given anchor_angle, and sweep around to the right.
-            .setAnchorType(ARC_ANCHOR_START)
-    }
-
+    private fun progressArc(percentage: Float) = Arc.builder()
+        .addContent(
+            ArcLine.builder()
+                // Uses degrees() helper to build an [AngularDimension] which represents progress.
+                .setLength(degrees(percentage * ARC_TOTAL_DEGREES))
+                .setColor(argb(ContextCompat.getColor(this, R.color.primary)))
+                .setThickness(PROGRESS_BAR_THICKNESS)
+        )
+        // Aligns the contents of this container relative to anchor_angle.
+        // ARC_ANCHOR_START - Anchors at the start of the elements. This will cause elements
+        // added to an arc to begin at the given anchor_angle, and sweep around to the right.
+        .setAnchorType(ARC_ANCHOR_START)
+        .build()
 
     // TODO: Create functions that construct/stylize Text representations of the step count & goal.
     // Creates a [Text] with current step count and stylizes it.
-    private fun currentStepsText(current: String, fontStyles: FontStyles): Text.Builder {
-        return Text.builder()
-            .setText(current)
-            .setFontStyle(fontStyles.display2())
-    }
+    private fun currentStepsText(current: String, fontStyles: FontStyles) = Text.builder()
+        .setText(current)
+        .setFontStyle(fontStyles.display2())
+        .build()
 
     // Creates a [Text] with total step count goal and stylizes it.
     private fun totalStepsText(goal: String, fontStyles: FontStyles) = Text.builder()
         .setText(goal)
         .setFontStyle(fontStyles.title3())
+        .build()
 
 
 
@@ -205,4 +203,5 @@ class GoalsTileService : TileProviderService() {
                     )
                     // TODO: Add click (END)
             )
+            .build()
 }
