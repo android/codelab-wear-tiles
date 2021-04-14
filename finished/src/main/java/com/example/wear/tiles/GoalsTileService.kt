@@ -19,8 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.wear.tiles.TileProviderService
 import androidx.wear.tiles.builders.*
 import androidx.wear.tiles.builders.ColorBuilders.argb
-import androidx.wear.tiles.builders.DimensionBuilders.degrees
-import androidx.wear.tiles.builders.DimensionBuilders.dp
+import androidx.wear.tiles.builders.DimensionBuilders.*
 import androidx.wear.tiles.builders.LayoutElementBuilders.*
 import androidx.wear.tiles.builders.ModifiersBuilders.*
 import androidx.wear.tiles.builders.ResourceBuilders.*
@@ -113,10 +112,14 @@ class GoalsTileService : TileProviderService() {
 
     // TODO: Create root Box layout and content.
     // Creates a simple [Box] container that lays out its children one over the other. In our
-    // case, a [Arc] that shows progress on top of a [Column] that includes the current steps
+    // case, an [Arc] that shows progress on top of a [Column] that includes the current steps
     // [Text], the total steps [Text], a [Spacer], and a running icon [Image].
     private fun layout(goalProgress: GoalProgress, fontStyles: FontStyles) =
         Box.builder()
+            // Sets width and height to expand and take up entire Tile space.
+            .setWidth(expand())
+            .setHeight(expand())
+
             // Adds an [Arc] via local function.
             .addContent(progressArc(goalProgress.percentage))
 
@@ -153,7 +156,9 @@ class GoalsTileService : TileProviderService() {
                 .setColor(argb(ContextCompat.getColor(this, R.color.primary)))
                 .setThickness(PROGRESS_BAR_THICKNESS)
         )
-        // Aligns the contents of this container relative to anchor_angle.
+        // Element will start at 12 o'clock or 0 degree position in the circle.
+        .setAnchorAngle(degrees(0.0f))
+        // Aligns the contents of this container relative to anchor angle above.
         // ARC_ANCHOR_START - Anchors at the start of the elements. This will cause elements
         // added to an arc to begin at the given anchor_angle, and sweep around to the right.
         .setAnchorType(ARC_ANCHOR_START)
@@ -171,8 +176,6 @@ class GoalsTileService : TileProviderService() {
         .setText(goal)
         .setFontStyle(fontStyles.title3())
         .build()
-
-
 
     // TODO: Create a function that constructs/stylizes a clickable Image of a running icon.
     // Creates a running icon [Image] that's also a button to refresh the tile.
