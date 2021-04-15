@@ -19,9 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.wear.tiles.TileProviderService
 import androidx.wear.tiles.builders.*
 import androidx.wear.tiles.builders.ColorBuilders.argb
-import androidx.wear.tiles.builders.DimensionBuilders.degrees
-import androidx.wear.tiles.builders.DimensionBuilders.dp
-import androidx.wear.tiles.builders.DimensionBuilders.sp
+import androidx.wear.tiles.builders.DimensionBuilders.*
 import androidx.wear.tiles.builders.LayoutElementBuilders.*
 import androidx.wear.tiles.builders.ModifiersBuilders.*
 import androidx.wear.tiles.builders.ResourceBuilders.*

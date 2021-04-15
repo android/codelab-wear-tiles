@@ -34,12 +34,7 @@ class TilePreviewActivity : ComponentActivity() {
         val rootLayout = findViewById<FrameLayout>(R.id.tile_container)
 
         // TODO: Review creation of Tile for Preview.
-        tileManager = TileManager(
-            context = this,
-            component = ComponentName(this, GoalsTileService::class.java),
-            parentView = rootLayout
-        )
-        tileManager.create()
+
     }
 
     override fun onDestroy() {
