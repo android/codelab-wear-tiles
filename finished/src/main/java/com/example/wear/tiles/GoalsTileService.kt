@@ -26,6 +26,7 @@ import androidx.wear.tiles.builders.ResourceBuilders.*
 import androidx.wear.tiles.builders.TileBuilders.Tile
 import androidx.wear.tiles.builders.TimelineBuilders.Timeline
 import androidx.wear.tiles.builders.TimelineBuilders.TimelineEntry
+import androidx.wear.tiles.readers.DeviceParametersReaders.DeviceParameters
 import androidx.wear.tiles.readers.RequestReaders.ResourcesRequest
 import androidx.wear.tiles.readers.RequestReaders.TileRequest
 import kotlinx.coroutines.CoroutineScope
@@ -66,8 +67,8 @@ class GoalsTileService : TileProviderService() {
 
         // Retrieves progress value to populate the Tile.
         val goalProgress = GoalsRepository.getGoalProgress()
-        // Retrieves font styles for any text in the Tile.
-        val fontStyles = FontStyles.withDeviceParameters(requestParams.deviceParameters)
+        // Retrieves device parameters to later retrieve font styles for any text in the Tile.
+        val deviceParams = requestParams.deviceParameters
 
         // Creates Tile.
         Tile.builder()
@@ -81,7 +82,7 @@ class GoalsTileService : TileProviderService() {
                     TimelineEntry.builder().setLayout(
                         Layout.builder().setRoot(
                             // Creates the root [Box] [LayoutElement]
-                            layout(goalProgress, fontStyles)
+                            layout(goalProgress, deviceParams)
                         )
                     )
                 )
@@ -114,7 +115,7 @@ class GoalsTileService : TileProviderService() {
     // Creates a simple [Box] container that lays out its children one over the other. In our
     // case, an [Arc] that shows progress on top of a [Column] that includes the current steps
     // [Text], the total steps [Text], a [Spacer], and a running icon [Image].
-    private fun layout(goalProgress: GoalProgress, fontStyles: FontStyles) =
+    private fun layout(goalProgress: GoalProgress, deviceParameters: DeviceParameters) =
         Box.builder()
             // Sets width and height to expand and take up entire Tile space.
             .setWidth(expand())
@@ -129,13 +130,13 @@ class GoalsTileService : TileProviderService() {
                 Column.builder()
                     // Adds a [Text] via local function.
                     .addContent(
-                        currentStepsText(goalProgress.current.toString(), fontStyles)
+                        currentStepsText(goalProgress.current.toString(), deviceParameters)
                     )
                     // Adds a [Text] via local function.
                     .addContent(
                         totalStepsText(
                             resources.getString(R.string.goal, goalProgress.goal),
-                            fontStyles
+                            deviceParameters
                         )
                     )
                     // TODO: Add Spacer and Image representations of our step graphic.
@@ -166,15 +167,15 @@ class GoalsTileService : TileProviderService() {
 
     // TODO: Create functions that construct/stylize Text representations of the step count & goal.
     // Creates a [Text] with current step count and stylizes it.
-    private fun currentStepsText(current: String, fontStyles: FontStyles) = Text.builder()
+    private fun currentStepsText(current: String, deviceParameters: DeviceParameters) = Text.builder()
         .setText(current)
-        .setFontStyle(fontStyles.display2())
+        .setFontStyle(FontStyles.display2(deviceParameters))
         .build()
 
     // Creates a [Text] with total step count goal and stylizes it.
-    private fun totalStepsText(goal: String, fontStyles: FontStyles) = Text.builder()
+    private fun totalStepsText(goal: String, deviceParameters: DeviceParameters) = Text.builder()
         .setText(goal)
-        .setFontStyle(fontStyles.title3())
+        .setFontStyle(FontStyles.title3(deviceParameters))
         .build()
 
     // TODO: Create a function that constructs/stylizes a clickable Image of a running icon.

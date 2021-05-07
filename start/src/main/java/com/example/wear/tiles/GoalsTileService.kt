@@ -26,6 +26,7 @@ import androidx.wear.tiles.builders.ResourceBuilders.*
 import androidx.wear.tiles.builders.TileBuilders.Tile
 import androidx.wear.tiles.builders.TimelineBuilders.Timeline
 import androidx.wear.tiles.builders.TimelineBuilders.TimelineEntry
+import androidx.wear.tiles.readers.DeviceParametersReaders.DeviceParameters
 import androidx.wear.tiles.readers.RequestReaders.ResourcesRequest
 import androidx.wear.tiles.readers.RequestReaders.TileRequest
 import kotlinx.coroutines.CoroutineScope
