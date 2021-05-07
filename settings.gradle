@@ -1,2 +1,2 @@
 include ':start', ':finished'
-rootProject.name = "Tiles"
+rootProject.name = "Tiles Code Lab"

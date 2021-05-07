@@ -19,14 +19,14 @@ import android.content.ComponentName
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
-import androidx.wear.tiles.manager.TileManager
+import androidx.wear.tiles.manager.TileClient
 
 /**
  * Debug Activity that will render our Tile. This Activity lives inside the debug package, so it
  * will not be included in release builds.
  */
 class TilePreviewActivity : ComponentActivity() {
-    lateinit var tileManager: TileManager
+    lateinit var tileClient: TileClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,17 +34,17 @@ class TilePreviewActivity : ComponentActivity() {
         val rootLayout = findViewById<FrameLayout>(R.id.tile_container)
 
         // TODO: Review creation of Tile for Preview.
-        tileManager = TileManager(
+        tileClient = TileClient(
             context = this,
             component = ComponentName(this, GoalsTileService::class.java),
             parentView = rootLayout
         )
-        tileManager.create()
+        tileClient.connect()
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        tileManager.close()
+        tileClient.close()
     }
 }

@@ -21,11 +21,10 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.example.wear.tiles"
-        minSdkVersion 25
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -47,9 +46,9 @@ dependencies {
     // General Wear functionality
     implementation 'androidx.wear:wear:1.1.0'
     // Tiles functionality
-    implementation "androidx.wear:wear-tiles:1.0.0-alpha01"
+    implementation "androidx.wear.tiles:tiles:1.0.0-alpha04"
     // Preview Tiles in an Activity for testing purposes
-    debugImplementation "androidx.wear:wear-tiles-renderer:1.0.0-alpha01"
+    debugImplementation "androidx.wear.tiles:tiles-renderer:1.0.0-alpha04"
     // Helper library for transforming coroutines to ListenableFutures
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.4.2'
 }
