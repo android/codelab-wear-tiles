@@ -85,7 +85,7 @@ class GoalsTileService : TileProviderService() {
         // Retrieves progress value to populate the Tile.
         val goalProgress = GoalsRepository.getGoalProgress()
         // Retrieves device parameters to later retrieve font styles for any text in the Tile.
-        val deviceParams = requestParams.deviceParameters
+        val deviceParams = requestParams.deviceParameters!!
 
         // Creates Tile.
         Tile.builder()
@@ -99,7 +99,7 @@ class GoalsTileService : TileProviderService() {
                     TimelineEntry.builder().setLayout(
                         Layout.builder().setRoot(
                             // Creates the root [Box] [LayoutElement]
-                            layout(goalProgress, deviceParams!!)
+                            layout(goalProgress, deviceParams)
                         )
                     )
                 )
