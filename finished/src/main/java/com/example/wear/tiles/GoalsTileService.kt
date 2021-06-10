@@ -16,19 +16,36 @@
 package com.example.wear.tiles
 
 import androidx.core.content.ContextCompat
+import androidx.wear.tiles.ActionBuilders
+import androidx.wear.tiles.ColorBuilders.argb
+import androidx.wear.tiles.DeviceParametersBuilders.DeviceParameters
+import androidx.wear.tiles.DimensionBuilders.degrees
+import androidx.wear.tiles.DimensionBuilders.dp
+import androidx.wear.tiles.DimensionBuilders.expand
+import androidx.wear.tiles.LayoutElementBuilders.ARC_ANCHOR_START
+import androidx.wear.tiles.LayoutElementBuilders.Arc
+import androidx.wear.tiles.LayoutElementBuilders.ArcLine
+import androidx.wear.tiles.LayoutElementBuilders.Box
+import androidx.wear.tiles.LayoutElementBuilders.Column
+import androidx.wear.tiles.LayoutElementBuilders.FontStyles
+import androidx.wear.tiles.LayoutElementBuilders.Image
+import androidx.wear.tiles.LayoutElementBuilders.Layout
+import androidx.wear.tiles.LayoutElementBuilders.Spacer
+import androidx.wear.tiles.LayoutElementBuilders.Text
+import androidx.wear.tiles.ModifiersBuilders.Background
+import androidx.wear.tiles.ModifiersBuilders.Clickable
+import androidx.wear.tiles.ModifiersBuilders.Corner
+import androidx.wear.tiles.ModifiersBuilders.Modifiers
+import androidx.wear.tiles.ModifiersBuilders.Padding
+import androidx.wear.tiles.RequestBuilders.ResourcesRequest
+import androidx.wear.tiles.RequestBuilders.TileRequest
+import androidx.wear.tiles.ResourceBuilders.AndroidImageResourceByResId
+import androidx.wear.tiles.ResourceBuilders.ImageResource
+import androidx.wear.tiles.ResourceBuilders.Resources
+import androidx.wear.tiles.TileBuilders.Tile
 import androidx.wear.tiles.TileProviderService
-import androidx.wear.tiles.builders.*
-import androidx.wear.tiles.builders.ColorBuilders.argb
-import androidx.wear.tiles.builders.DimensionBuilders.*
-import androidx.wear.tiles.builders.LayoutElementBuilders.*
-import androidx.wear.tiles.builders.ModifiersBuilders.*
-import androidx.wear.tiles.builders.ResourceBuilders.*
-import androidx.wear.tiles.builders.TileBuilders.Tile
-import androidx.wear.tiles.builders.TimelineBuilders.Timeline
-import androidx.wear.tiles.builders.TimelineBuilders.TimelineEntry
-import androidx.wear.tiles.readers.DeviceParametersReaders.DeviceParameters
-import androidx.wear.tiles.readers.RequestReaders.ResourcesRequest
-import androidx.wear.tiles.readers.RequestReaders.TileRequest
+import androidx.wear.tiles.TimelineBuilders.Timeline
+import androidx.wear.tiles.TimelineBuilders.TimelineEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -68,7 +85,7 @@ class GoalsTileService : TileProviderService() {
         // Retrieves progress value to populate the Tile.
         val goalProgress = GoalsRepository.getGoalProgress()
         // Retrieves device parameters to later retrieve font styles for any text in the Tile.
-        val deviceParams = requestParams.deviceParameters
+        val deviceParams = requestParams.deviceParameters!!
 
         // Creates Tile.
         Tile.builder()
@@ -96,7 +113,7 @@ class GoalsTileService : TileProviderService() {
             .addIdToImageMapping(
                 ID_IMAGE_START_RUN,
                 ImageResource.builder()
-                    .setAndroidResourceByResid(
+                    .setAndroidResourceByResId(
                         AndroidImageResourceByResId.builder()
                             .setResourceId(R.drawable.ic_run)
                     )
