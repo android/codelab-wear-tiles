@@ -43,7 +43,7 @@ import androidx.wear.tiles.ResourceBuilders.AndroidImageResourceByResId
 import androidx.wear.tiles.ResourceBuilders.ImageResource
 import androidx.wear.tiles.ResourceBuilders.Resources
 import androidx.wear.tiles.TileBuilders.Tile
-import androidx.wear.tiles.TileProviderService
+import androidx.wear.tiles.TileService
 import androidx.wear.tiles.TimelineBuilders.Timeline
 import androidx.wear.tiles.TimelineBuilders.TimelineEntry
 import kotlinx.coroutines.CoroutineScope
@@ -75,7 +75,7 @@ private const val ID_CLICK_START_RUN = "click_start_run"
  * Creates a Fitness Tile, showing your progress towards a daily goal. The progress is defined
  * randomly, for demo purposes only. A new random progress is shown when the user taps the button.
  */
-class GoalsTileService : TileProviderService() {
+class GoalsTileService : TileService() {
     // For coroutines, use a custom scope we can cancel when the service is destroyed
     private val serviceScope = CoroutineScope(Dispatchers.IO)
 
@@ -88,35 +88,43 @@ class GoalsTileService : TileProviderService() {
         val deviceParams = requestParams.deviceParameters!!
 
         // Creates Tile.
-        Tile.builder()
+        Tile.Builder()
             // If there are any graphics/images defined in the Tile's layout, the system will
             // retrieve them via onResourcesRequest() and match them with this version number.
             .setResourcesVersion(RESOURCES_VERSION)
 
             // Creates a timeline to hold one or more tile entries for a specific time periods.
             .setTimeline(
-                Timeline.builder().addTimelineEntry(
-                    TimelineEntry.builder().setLayout(
-                        Layout.builder().setRoot(
-                            // Creates the root [Box] [LayoutElement]
-                            layout(goalProgress, deviceParams)
-                        )
+                Timeline.Builder()
+                    .addTimelineEntry(
+                        TimelineEntry.Builder()
+                            .setLayout(
+                                Layout.Builder()
+                                    .setRoot(
+                                        // Creates the root [Box] [LayoutElement]
+                                        layout(goalProgress, deviceParams)
+                                    )
+                                    .build()
+                            )
+                            .build()
                     )
-                )
+                    .build()
             ).build()
     }
 
     // TODO: Supply resources (graphics) for the Tile.
     override fun onResourcesRequest(requestParams: ResourcesRequest) = serviceScope.future {
-        Resources.builder()
+        Resources.Builder()
             .setVersion(RESOURCES_VERSION)
             .addIdToImageMapping(
                 ID_IMAGE_START_RUN,
-                ImageResource.builder()
+                ImageResource.Builder()
                     .setAndroidResourceByResId(
-                        AndroidImageResourceByResId.builder()
+                        AndroidImageResourceByResId.Builder()
                             .setResourceId(R.drawable.ic_run)
+                            .build()
                     )
+                    .build()
             )
             .build()
     }
@@ -133,7 +141,7 @@ class GoalsTileService : TileProviderService() {
     // case, an [Arc] that shows progress on top of a [Column] that includes the current steps
     // [Text], the total steps [Text], a [Spacer], and a running icon [Image].
     private fun layout(goalProgress: GoalProgress, deviceParameters: DeviceParameters) =
-        Box.builder()
+        Box.Builder()
             // Sets width and height to expand and take up entire Tile space.
             .setWidth(expand())
             .setHeight(expand())
@@ -144,7 +152,7 @@ class GoalsTileService : TileProviderService() {
             // TODO: Add Column containing the rest of the data.
             // Adds a [Column] containing the two [Text] objects, a [Spacer], and a [Image].
             .addContent(
-                Column.builder()
+                Column.Builder()
                     // Adds a [Text] via local function.
                     .addContent(
                         currentStepsText(goalProgress.current.toString(), deviceParameters)
@@ -158,21 +166,23 @@ class GoalsTileService : TileProviderService() {
                     )
                     // TODO: Add Spacer and Image representations of our step graphic.
                     // Adds a [Spacer].
-                    .addContent(Spacer.builder().setHeight(VERTICAL_SPACING_HEIGHT))
+                    .addContent(Spacer.Builder().setHeight(VERTICAL_SPACING_HEIGHT).build())
                     // Adds an [Image] via local function.
                     .addContent(startRunButton())
+                    .build()
             )
             .build()
 
     // TODO: Create a function that constructs an Arc representation of the current step progress.
     // Creates an [Arc] representing current progress towards steps goal.
-    private fun progressArc(percentage: Float) = Arc.builder()
+    private fun progressArc(percentage: Float) = Arc.Builder()
         .addContent(
-            ArcLine.builder()
+            ArcLine.Builder()
                 // Uses degrees() helper to build an [AngularDimension] which represents progress.
                 .setLength(degrees(percentage * ARC_TOTAL_DEGREES))
                 .setColor(argb(ContextCompat.getColor(this, R.color.primary)))
                 .setThickness(PROGRESS_BAR_THICKNESS)
+                .build()
         )
         // Element will start at 12 o'clock or 0 degree position in the circle.
         .setAnchorAngle(degrees(0.0f))
@@ -184,45 +194,49 @@ class GoalsTileService : TileProviderService() {
 
     // TODO: Create functions that construct/stylize Text representations of the step count & goal.
     // Creates a [Text] with current step count and stylizes it.
-    private fun currentStepsText(current: String, deviceParameters: DeviceParameters) = Text.builder()
+    private fun currentStepsText(current: String, deviceParameters: DeviceParameters) = Text.Builder()
         .setText(current)
-        .setFontStyle(FontStyles.display2(deviceParameters))
+        .setFontStyle(FontStyles.display2(deviceParameters).build())
         .build()
 
     // Creates a [Text] with total step count goal and stylizes it.
-    private fun totalStepsText(goal: String, deviceParameters: DeviceParameters) = Text.builder()
+    private fun totalStepsText(goal: String, deviceParameters: DeviceParameters) = Text.Builder()
         .setText(goal)
-        .setFontStyle(FontStyles.title3(deviceParameters))
+        .setFontStyle(FontStyles.title3(deviceParameters).build())
         .build()
 
     // TODO: Create a function that constructs/stylizes a clickable Image of a running icon.
     // Creates a running icon [Image] that's also a button to refresh the tile.
     private fun startRunButton() =
-        Image.builder()
+        Image.Builder()
             .setWidth(BUTTON_SIZE)
             .setHeight(BUTTON_SIZE)
             .setResourceId(ID_IMAGE_START_RUN)
             .setModifiers(
-                Modifiers.builder()
+                Modifiers.Builder()
                     .setPadding(
-                        Padding.builder()
+                        Padding.Builder()
                             .setStart(BUTTON_PADDING)
                             .setEnd(BUTTON_PADDING)
                             .setTop(BUTTON_PADDING)
                             .setBottom(BUTTON_PADDING)
+                            .build()
                     )
                     .setBackground(
-                        Background.builder()
-                            .setCorner(Corner.builder().setRadius(BUTTON_RADIUS))
+                        Background.Builder()
+                            .setCorner(Corner.Builder().setRadius(BUTTON_RADIUS).build())
                             .setColor(argb(ContextCompat.getColor(this, R.color.primaryDark)))
+                            .build()
                     )
                     // TODO: Add click (START)
                     .setClickable(
-                        Clickable.builder()
+                        Clickable.Builder()
                             .setId(ID_CLICK_START_RUN)
-                            .setOnClick(ActionBuilders.LoadAction.builder())
+                            .setOnClick(ActionBuilders.LoadAction.Builder().build())
+                            .build()
                     )
                     // TODO: Add click (END)
+                    .build()
             )
             .build()
 }

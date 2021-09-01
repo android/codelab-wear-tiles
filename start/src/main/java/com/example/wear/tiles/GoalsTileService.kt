@@ -43,7 +43,7 @@ import androidx.wear.tiles.ResourceBuilders.AndroidImageResourceByResId
 import androidx.wear.tiles.ResourceBuilders.ImageResource
 import androidx.wear.tiles.ResourceBuilders.Resources
 import androidx.wear.tiles.TileBuilders.Tile
-import androidx.wear.tiles.TileProviderService
+import androidx.wear.tiles.TileService
 import androidx.wear.tiles.TimelineBuilders.Timeline
 import androidx.wear.tiles.TimelineBuilders.TimelineEntry
 import kotlinx.coroutines.CoroutineScope
@@ -75,7 +75,7 @@ private const val ID_CLICK_START_RUN = "click_start_run"
  * Creates a Fitness Tile, showing your progress towards a daily goal. The progress is defined
  * randomly, for demo purposes only. A new random progress is shown when the user taps the button.
  */
-class GoalsTileService : TileProviderService() {
+class GoalsTileService : TileService() {
     // For coroutines, use a custom scope we can cancel when the service is destroyed
     private val serviceScope = CoroutineScope(Dispatchers.IO)
 
@@ -83,26 +83,36 @@ class GoalsTileService : TileProviderService() {
     override fun onTileRequest(requestParams: TileRequest) = serviceScope.future {
 
         // Creates Tile.
-        Tile.builder()
+        Tile.Builder()
             // If there are any graphics/images defined in the Tile's layout, the system will
             // retrieve them via onResourcesRequest() and match them with this version number.
             .setResourcesVersion(RESOURCES_VERSION)
 
             // Creates a timeline to hold one or more tile entries for a specific time periods.
             .setTimeline(
-                Timeline.builder().addTimelineEntry(
-                    TimelineEntry.builder().setLayout(
-                        Layout.builder().setRoot(
-                            Text.builder().setText(getString(R.string.placeholder_text))
-                        )
+                Timeline.Builder()
+                    .addTimelineEntry(
+                        TimelineEntry.Builder()
+                            .setLayout(
+                                Layout.Builder()
+                                    .setRoot(
+                                        Text.Builder()
+                                            .setText(
+                                                getString(R.string.placeholder_text)
+                                            )
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .build()
                     )
-                )
+                    .build()
             ).build()
     }
 
     // TODO: Supply resources (graphics) for the Tile.
     override fun onResourcesRequest(requestParams: ResourcesRequest) = serviceScope.future {
-        Resources.builder()
+        Resources.Builder()
             .setVersion(RESOURCES_VERSION)
             // No Resources quite yet!
             .build()
