@@ -41,14 +41,13 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
     // General Wear functionality
-    implementation 'androidx.wear:wear:1.1.0'
+    implementation 'androidx.wear:wear:1.2.0'
     // Tiles functionality
-    implementation "androidx.wear.tiles:tiles:1.0.0-alpha11"
+    implementation "androidx.wear.tiles:tiles:1.0.0"
     // Preview Tiles in an Activity for testing purposes
-    debugImplementation "androidx.wear.tiles:tiles-renderer:1.0.0-alpha11"
+    debugImplementation "androidx.wear.tiles:tiles-renderer:1.0.0"
     // Helper library for transforming coroutines to ListenableFutures
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.5.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.5.2'
 }
