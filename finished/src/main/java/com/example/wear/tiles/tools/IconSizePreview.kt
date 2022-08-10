@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Android Open Source Project
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.wear.tiles
+package com.example.wear.tiles.tools
 
-import kotlinx.coroutines.delay
-import kotlin.random.Random
+import androidx.compose.ui.tooling.preview.Preview
 
-data class GoalProgress(
-    val current: Int,
-    val goal: Int
-) {
-    val percentage get() = current.toFloat() / goal.toFloat()
-}
-
-/**
- * A fake repo
- */
-object GoalsRepository {
-    suspend fun getGoalProgress(): GoalProgress {
-        delay(200)
-        return goalProgress.copy(current = Random.nextInt(8000))
-    }
-}
-
-val goalProgress = GoalProgress(current = 0, goal = 8000)
+@Preview(
+    backgroundColor = 0xff000000,
+    showBackground = true,
+    widthDp = 100,
+    heightDp = 100
+)
+public annotation class IconSizePreview

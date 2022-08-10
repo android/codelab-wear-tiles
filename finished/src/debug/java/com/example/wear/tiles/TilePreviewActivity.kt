@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.wear.tiles.manager.TileUiClient
+import com.example.wear.tiles.messaging.MessagingTileService
 
 /**
  * Debug Activity that will render our Tile. This Activity lives inside the debug package, so it

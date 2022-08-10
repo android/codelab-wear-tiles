@@ -40,7 +40,6 @@ class TilePreviewActivity : ComponentActivity() {
             parentView = rootLayout
         )
         tileUiClient.connect()
-
     }
 
     override fun onDestroy() {
