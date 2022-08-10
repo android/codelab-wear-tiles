@@ -38,16 +38,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'com.example.wear.tiles'
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.7.0'
-    // General Wear functionality
     implementation 'androidx.wear:wear:1.2.0'
-    // Tiles functionality
-    implementation "androidx.wear.tiles:tiles:1.0.0"
-    // Preview Tiles in an Activity for testing purposes
-    debugImplementation "androidx.wear.tiles:tiles-renderer:1.0.0"
-    // Helper library for transforming coroutines to ListenableFutures
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.5.2'
+    implementation 'androidx.wear.tiles:tiles:1.1.0-alpha07'
+    implementation 'androidx.wear.tiles:tiles-material:1.1.0-alpha07'
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.1') {
+        because 'it has helpers which transform coroutines to ListenableFutures'
+    }
+    debugImplementation('androidx.wear.tiles:tiles-renderer:1.1.0-alpha07') {
+        because 'it contains TileUiClient; lets us preview Tiles in a debug Activity'
+    }
 }
