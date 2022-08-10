@@ -36,7 +36,7 @@ class TilePreviewActivity : ComponentActivity() {
         // TODO: Review creation of Tile for Preview.
         tileUiClient = TileUiClient(
             context = this,
-            component = ComponentName(this, GoalsTileService::class.java),
+            component = ComponentName(this, MessagingTileService::class.java),
             parentView = rootLayout
         )
         tileUiClient.connect()

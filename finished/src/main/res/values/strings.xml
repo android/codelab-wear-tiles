@@ -14,9 +14,9 @@
   ~ limitations under the License.
   -->
 <resources>
-    <string name="app_name">Step Goals</string>
-    <string name="tile_description">Codelab testing app</string>
-    <string name="fitness_tile_label">Step progress</string>
+    <string name="app_name">Messaging</string>
+    <string name="tile_description">(Codelab) Shows recent conversations</string>
+    <string name="tile_label">Recent conversations</string>
     <string name="goal">/ %d steps</string>
 
     <string name="placeholder_text">Time to create a tile!</string>
