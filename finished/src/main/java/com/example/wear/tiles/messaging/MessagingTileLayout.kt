@@ -16,6 +16,10 @@
 package com.example.wear.tiles.messaging
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.wear.tiles.ActionBuilders
 import androidx.wear.tiles.ColorBuilders
@@ -24,6 +28,9 @@ import androidx.wear.tiles.DimensionBuilders
 import androidx.wear.tiles.LayoutElementBuilders
 import androidx.wear.tiles.ModifiersBuilders
 import com.example.wear.tiles.R
+import com.google.android.horologist.compose.tools.LayoutRootPreview
+import com.google.android.horologist.compose.tools.buildDeviceParameters
+import com.google.android.horologist.tiles.images.drawableResToImageResource
 
 private val PROGRESS_BAR_THICKNESS = DimensionBuilders.dp(6f)
 private val BUTTON_SIZE = DimensionBuilders.dp(48f)
@@ -152,3 +159,28 @@ private fun startRunButton(context: Context) =
                 .build()
         )
         .build()
+
+@Preview(
+    device = Devices.WEAR_OS_SMALL_ROUND,
+    showSystemUi = true,
+    backgroundColor = 0xff000000,
+    showBackground = true,
+    group = "Devices - Small Round",
+)
+@Composable
+private fun MessageTilePreview() {
+    val context = LocalContext.current
+    val state = goalProgress
+    LayoutRootPreview(
+        layout(
+            context,
+            state,
+            buildDeviceParameters(context.resources)
+        )
+    ) {
+        addIdToImageMapping(
+            ID_IMAGE_START_RUN,
+            drawableResToImageResource(R.drawable.ic_message_24)
+        )
+    }
+}

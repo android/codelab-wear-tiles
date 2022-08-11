@@ -37,21 +37,35 @@ android {
         freeCompilerArgs += "-opt-in=com.google.android.horologist.compose.tools.ExperimentalHorologistComposeToolsApi"
     }
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "1.2.0"
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     namespace 'com.example.wear.tiles'
-
 }
 
 dependencies {
     implementation 'androidx.wear:wear:1.2.0'
-    implementation 'androidx.wear.tiles:tiles:1.1.0-beta01'
-    implementation 'androidx.wear.tiles:tiles-material:1.1.0-beta01'
 
-    implementation 'com.google.android.horologist:horologist-compose-tools:0.1.1'
-    implementation 'com.google.android.horologist:horologist-tiles:0.1.1'
+    def tilesVersion = '1.1.0-beta01'
+    implementation "androidx.wear.tiles:tiles:$tilesVersion"
+    implementation "androidx.wear.tiles:tiles-material:$tilesVersion"
+
+    def horologistVersion = '0.1.1'
+    implementation "com.google.android.horologist:horologist-compose-tools:$horologistVersion"
+    implementation "com.google.android.horologist:horologist-tiles:$horologistVersion"
+
+    def composeVersion = '1.0.0'
+    debugImplementation "androidx.compose.ui:ui-tooling:$composeVersion"
+    implementation "androidx.compose.ui:ui-tooling-preview:$composeVersion"
 
     implementation('org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.1') {
         because 'it has helpers which transform coroutines to ListenableFutures'
