@@ -16,6 +16,7 @@
 package com.example.wear.tiles.messaging
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.wear.tiles.DeviceParametersBuilders
 import androidx.wear.tiles.LayoutElementBuilders
 import androidx.wear.tiles.ResourceBuilders
@@ -24,29 +25,37 @@ import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
 
 class MessagingTileRenderer(context: Context) :
-    SingleTileLayoutRenderer<GoalProgress, Unit>(context) {
+    SingleTileLayoutRenderer<MessagingTileState, Map<Contact, Bitmap>>(context) {
 
     override fun renderTile(
-        state: GoalProgress, // TODO: message state
+        state: MessagingTileState,
         deviceParameters: DeviceParametersBuilders.DeviceParameters
     ): LayoutElementBuilders.LayoutElement {
-        return layout(
-            context,
+        return messagingTileLayout(
             state,
+            context,
             deviceParameters
         )
     }
 
     override fun ResourceBuilders.Resources.Builder.produceRequestedResources(
-        resourceResults: Unit,
+        resourceResults: Map<Contact, Bitmap>,
         deviceParameters: DeviceParametersBuilders.DeviceParameters,
         resourceIds: MutableList<String>
     ) {
-        addIdToImageMapping(
-            ID_IMAGE_START_RUN,
-            drawableResToImageResource(R.drawable.ic_message_24)
-        )
+        addIdToImageMapping(ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24))
 
-        // TODO: other avatars
+        resourceResults.forEach { (contact, bitmap) ->
+            addIdToImageMapping(
+                /* id = */ "$ID_CONTACT_PREFIX${contact.id}",
+                /* image = */ bitmapToImageResource(bitmap)
+            )
+        }
+    }
+
+    companion object {
+
+        internal const val ID_IC_SEARCH = "ic_search"
+        internal const val ID_CONTACT_PREFIX = "contact:"
     }
 }

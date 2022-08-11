@@ -15,7 +15,6 @@
     <string name="app_name">Messaging</string>
     <string name="tile_description">(Codelab) Shows recent conversations</string>
     <string name="tile_label">Recent conversations</string>
-    <string name="goal">/ %d steps</string>
-
-    <string name="placeholder_text">Time to create a tile!</string>
+    <string name="tile_messaging_create_new">New</string>
+    <string name="tile_messaging_search">Search</string>
 </resources>

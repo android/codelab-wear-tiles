@@ -18,169 +18,130 @@ package com.example.wear.tiles.messaging
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
-import androidx.wear.tiles.ActionBuilders
-import androidx.wear.tiles.ColorBuilders
 import androidx.wear.tiles.DeviceParametersBuilders
-import androidx.wear.tiles.DimensionBuilders
-import androidx.wear.tiles.LayoutElementBuilders
 import androidx.wear.tiles.ModifiersBuilders
+import androidx.wear.tiles.material.Button
+import androidx.wear.tiles.material.ButtonColors
+import androidx.wear.tiles.material.ChipColors
+import androidx.wear.tiles.material.CompactChip
+import androidx.wear.tiles.material.layouts.MultiButtonLayout
+import androidx.wear.tiles.material.layouts.PrimaryLayout
 import com.example.wear.tiles.R
+import com.example.wear.tiles.tools.emptyClickable
+import com.google.android.horologist.compose.tools.LayoutElementPreview
 import com.google.android.horologist.compose.tools.LayoutRootPreview
+import com.google.android.horologist.compose.tools.WearSmallRoundDevicePreview
 import com.google.android.horologist.compose.tools.buildDeviceParameters
 import com.google.android.horologist.tiles.images.drawableResToImageResource
 
-private val PROGRESS_BAR_THICKNESS = DimensionBuilders.dp(6f)
-private val BUTTON_SIZE = DimensionBuilders.dp(48f)
-private val BUTTON_RADIUS = DimensionBuilders.dp(24f)
-private val BUTTON_PADDING = DimensionBuilders.dp(12f)
-private val VERTICAL_SPACING_HEIGHT = DimensionBuilders.dp(8f)
-private const val ARC_TOTAL_DEGREES = 360f
-internal const val ID_IMAGE_START_RUN = "image_start_run"
-private const val ID_CLICK_START_RUN = "click_start_run"
-
-internal fun layout(
+/**
+ * Layout definition for the Messaging Tile.
+ *
+ * By separating the layout completely, we can pass fake data for the [MessageTilePreview] so it can
+ * be rendered in Android Studio (use the "Split" or "Design" editor modes).
+ */
+internal fun messagingTileLayout(
+    state: MessagingTileState,
     context: Context,
-    goalProgress: GoalProgress,
     deviceParameters: DeviceParametersBuilders.DeviceParameters
-) = LayoutElementBuilders.Box.Builder()
-    // Sets width and height to expand and take up entire Tile space.
-    .setWidth(DimensionBuilders.expand())
-    .setHeight(DimensionBuilders.expand())
-
-    // Adds an [Arc] via local function.
-    .addContent(progressArc(context, goalProgress.percentage))
-
-    // TODO: Add Column containing the rest of the data.
-    // Adds a [Column] containing the two [Text] objects, a [Spacer], and a [Image].
-    .addContent(
-        LayoutElementBuilders.Column.Builder()
-            // Adds a [Text] via local function.
-            .addContent(
-                currentStepsText(goalProgress.current.toString(), deviceParameters)
-            )
-            // Adds a [Text] via local function.
-            .addContent(
-                totalStepsText(
-                    context.getString(R.string.goal, goalProgress.goal),
-                    deviceParameters
-                )
-            )
-            // TODO: Add Spacer and Image representations of our step graphic.
-            // Adds a [Spacer].
-            .addContent(
-                LayoutElementBuilders.Spacer.Builder().setHeight(VERTICAL_SPACING_HEIGHT).build()
-            )
-            // Adds an [Image] via local function.
-            .addContent(startRunButton(context))
+) = PrimaryLayout.Builder(deviceParameters)
+    .setContent(
+        MultiButtonLayout.Builder()
+            .apply {
+                // In a PrimaryLayout with a compact chip at the bottom, we can fit 5 buttons.
+                // We're only taking the first 4 contacts so that we can fit a Search button too.
+                state.contacts.take(4).forEach { contact ->
+                    addButtonContent(contactLayout(context, contact, emptyClickable))
+                }
+            }
+            .addButtonContent(searchLayout(context, emptyClickable))
             .build()
-    )
-    .build()
-
-// TODO: Create a function that constructs an Arc representation of the current step progress.
-// Creates an [Arc] representing current progress towards steps goal.
-private fun progressArc(context: Context, percentage: Float) = LayoutElementBuilders.Arc.Builder()
-    .addContent(
-        LayoutElementBuilders.ArcLine.Builder()
-            // Uses degrees() helper to build an [AngularDimension] which represents progress.
-            .setLength(DimensionBuilders.degrees(percentage * ARC_TOTAL_DEGREES))
-            .setColor(ColorBuilders.argb(ContextCompat.getColor(context, R.color.primary)))
-            .setThickness(PROGRESS_BAR_THICKNESS)
-            .build()
-    )
-    // Element will start at 12 o'clock or 0 degree position in the circle.
-    .setAnchorAngle(DimensionBuilders.degrees(0.0f))
-    // Aligns the contents of this container relative to anchor angle above.
-    // ARC_ANCHOR_START - Anchors at the start of the elements. This will cause elements
-    // added to an arc to begin at the given anchor_angle, and sweep around to the right.
-    .setAnchorType(LayoutElementBuilders.ARC_ANCHOR_START)
-    .build()
-
-// TODO: Create functions that construct/stylize Text representations of the step count & goal.
-// Creates a [Text] with current step count and stylizes it.
-private fun currentStepsText(
-    current: String,
-    deviceParameters: DeviceParametersBuilders.DeviceParameters
-) = LayoutElementBuilders.Text.Builder()
-    .setText(current)
-    .setFontStyle(LayoutElementBuilders.FontStyles.display2(deviceParameters).build())
-    .build()
-
-// Creates a [Text] with total step count goal and stylizes it.
-private fun totalStepsText(
-    goal: String,
-    deviceParameters: DeviceParametersBuilders.DeviceParameters
-) = LayoutElementBuilders.Text.Builder()
-    .setText(goal)
-    .setFontStyle(LayoutElementBuilders.FontStyles.title3(deviceParameters).build())
-    .build()
-
-// Creates a running icon [Image] that's also a button to refresh the tile.
-private fun startRunButton(context: Context) =
-    LayoutElementBuilders.Image.Builder()
-        .setWidth(BUTTON_SIZE)
-        .setHeight(BUTTON_SIZE)
-        .setResourceId(ID_IMAGE_START_RUN)
-        .setModifiers(
-            ModifiersBuilders.Modifiers.Builder()
-                .setPadding(
-                    ModifiersBuilders.Padding.Builder()
-                        .setStart(BUTTON_PADDING)
-                        .setEnd(BUTTON_PADDING)
-                        .setTop(BUTTON_PADDING)
-                        .setBottom(BUTTON_PADDING)
-                        .build()
-                )
-                .setBackground(
-                    ModifiersBuilders.Background.Builder()
-                        .setCorner(
-                            ModifiersBuilders.Corner.Builder().setRadius(BUTTON_RADIUS).build()
-                        )
-                        .setColor(
-                            ColorBuilders.argb(
-                                ContextCompat.getColor(
-                                    context,
-                                    R.color.primaryDark
-                                )
-                            )
-                        )
-                        .build()
-                )
-                // TODO: Add click (START)
-                .setClickable(
-                    ModifiersBuilders.Clickable.Builder()
-                        .setId(ID_CLICK_START_RUN)
-                        .setOnClick(ActionBuilders.LoadAction.Builder().build())
-                        .build()
-                )
-                // TODO: Add click (END)
-                .build()
+    ).setPrimaryChipContent(
+        CompactChip.Builder(
+            context,
+            context.getString(R.string.tile_messaging_create_new),
+            emptyClickable,
+            deviceParameters
         )
-        .build()
+            .setChipColors(ChipColors.primaryChipColors(MessagingTileTheme.colors))
+            .build()
+    )
+    .build()
 
-@Preview(
-    device = Devices.WEAR_OS_SMALL_ROUND,
-    showSystemUi = true,
-    backgroundColor = 0xff000000,
-    showBackground = true,
-    group = "Devices - Small Round",
-)
+private fun contactLayout(
+    context: Context,
+    contact: Contact,
+    clickable: ModifiersBuilders.Clickable,
+) = Button.Builder(context, clickable)
+    .setContentDescription(contact.name)
+    .apply {
+        if (contact.avatarUrl != null) {
+            setImageContent(contact.imageResourceId())
+        } else {
+            setTextContent(contact.initials)
+            setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
+        }
+    }
+    .build()
+
+private fun Contact.imageResourceId() = "${MessagingTileRenderer.ID_CONTACT_PREFIX}$id"
+
+private fun searchLayout(
+    context: Context,
+    clickable: ModifiersBuilders.Clickable,
+) = Button.Builder(context, clickable)
+    .setContentDescription(context.getString(R.string.tile_messaging_search))
+    .setIconContent(MessagingTileRenderer.ID_IC_SEARCH)
+    .setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
+    .build()
+
+@WearSmallRoundDevicePreview
 @Composable
 private fun MessageTilePreview() {
     val context = LocalContext.current
-    val state = goalProgress
+    val state = MessagingTileState(MessagingRepo.knownContacts)
     LayoutRootPreview(
-        layout(
-            context,
+        messagingTileLayout(
             state,
+            context,
             buildDeviceParameters(context.resources)
         )
     ) {
         addIdToImageMapping(
-            ID_IMAGE_START_RUN,
-            drawableResToImageResource(R.drawable.ic_message_24)
+            state.contacts[1].imageResourceId(),
+            drawableResToImageResource(R.drawable.ali)
+        )
+        addIdToImageMapping(
+            state.contacts[2].imageResourceId(),
+            drawableResToImageResource(R.drawable.taylor)
+        )
+        addIdToImageMapping(
+            MessagingTileRenderer.ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24)
         )
     }
 }
+
+@IconSizePreview
+@Composable
+private fun SearchButtonPreview() {
+    LayoutElementPreview(
+        searchLayout(
+            context = LocalContext.current,
+            clickable = emptyClickable
+        )
+    ) {
+        addIdToImageMapping(
+            MessagingTileRenderer.ID_IC_SEARCH,
+            drawableResToImageResource(R.drawable.ic_search_24)
+        )
+    }
+}
+
+@Preview(
+    backgroundColor = 0xff000000,
+    showBackground = true,
+    widthDp = 100,
+    heightDp = 100
+)
+public annotation class IconSizePreview
