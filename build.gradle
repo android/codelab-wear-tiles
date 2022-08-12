@@ -29,6 +29,7 @@ buildscript {
 
 plugins {
     id 'com.diffplug.spotless' version '6.5.2'
+    id 'org.jetbrains.kotlin.android' version '1.7.0' apply false
 }
 
 subprojects {

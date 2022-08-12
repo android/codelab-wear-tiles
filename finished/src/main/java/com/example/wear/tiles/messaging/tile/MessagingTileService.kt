@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.wear.tiles.messaging
+package com.example.wear.tiles.messaging.tile
 
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.tiles.RequestBuilders.ResourcesRequest
@@ -21,6 +21,8 @@ import androidx.wear.tiles.RequestBuilders.TileRequest
 import androidx.wear.tiles.ResourceBuilders.Resources
 import androidx.wear.tiles.TileBuilders.Tile
 import coil.imageLoader
+import com.example.wear.tiles.messaging.MessagingRepo
+import com.example.wear.tiles.messaging.fetchAvatarsFromNetwork
 import com.google.android.horologist.tiles.CoroutinesTileService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
+// TODO: interactions (reload/open activity?)
 class MessagingTileService : CoroutinesTileService() {
 
     private lateinit var repo: MessagingRepo
