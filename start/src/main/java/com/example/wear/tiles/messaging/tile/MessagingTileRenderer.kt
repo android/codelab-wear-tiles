@@ -17,14 +17,11 @@ package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.wear.tiles.ActionBuilders
 import androidx.wear.tiles.DeviceParametersBuilders
 import androidx.wear.tiles.LayoutElementBuilders
-import androidx.wear.tiles.ModifiersBuilders
 import androidx.wear.tiles.ResourceBuilders
 import com.example.wear.tiles.R
 import com.example.wear.tiles.messaging.Contact
-import com.example.wear.tiles.messaging.MainActivity
 import com.example.wear.tiles.messaging.bitmapToImageResource
 import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
@@ -38,16 +35,7 @@ class MessagingTileRenderer(context: Context) :
     ): LayoutElementBuilders.LayoutElement {
         return messagingTileLayout(
             context = context,
-            deviceParameters = deviceParameters,
-            state = state,
-            contactClickableFactory = { contact ->
-                launchActivityClickable(
-                    clickableId = contact.id.toString(),
-                    androidActivity = openConversation(contact)
-                )
-            },
-            searchButtonClickable = launchActivityClickable("search_button", openSearch()),
-            newButtonClickable = launchActivityClickable("new_button", openNewConversation())
+            deviceParameters = deviceParameters
         )
     }
 
@@ -71,53 +59,4 @@ class MessagingTileRenderer(context: Context) :
         internal const val ID_IC_SEARCH = "ic_search"
         internal const val ID_CONTACT_PREFIX = "contact:"
     }
-}
-
-/**
- * Creates a Clickable that can be used to launch an activity.
- */
-private fun launchActivityClickable(
-    clickableId: String,
-    androidActivity: ActionBuilders.AndroidActivity
-) =
-    ModifiersBuilders.Clickable.Builder()
-        .setId(clickableId)
-        .setOnClick(
-            ActionBuilders.LaunchAction.Builder()
-                .setAndroidActivity(androidActivity)
-                .build()
-        )
-        .build()
-
-private fun openConversation(contact: Contact) = ActionBuilders.AndroidActivity.Builder()
-    .setMessagingActivity()
-    .addKeyToExtraMapping(
-        MainActivity.EXTRA_JOURNEY,
-        ActionBuilders.stringExtra(MainActivity.EXTRA_JOURNEY_CONVERSATION)
-    )
-    .addKeyToExtraMapping(
-        MainActivity.EXTRA_CONVERSATION_CONTACT,
-        ActionBuilders.stringExtra(contact.name)
-    )
-    .build()
-
-private fun openSearch() = ActionBuilders.AndroidActivity.Builder()
-    .setMessagingActivity()
-    .addKeyToExtraMapping(
-        MainActivity.EXTRA_JOURNEY,
-        ActionBuilders.stringExtra(MainActivity.EXTRA_JOURNEY_SEARCH)
-    )
-    .build()
-
-private fun openNewConversation() = ActionBuilders.AndroidActivity.Builder()
-    .setMessagingActivity()
-    .addKeyToExtraMapping(
-        MainActivity.EXTRA_JOURNEY,
-        ActionBuilders.stringExtra(MainActivity.EXTRA_JOURNEY_NEW)
-    )
-    .build()
-
-private fun ActionBuilders.AndroidActivity.Builder.setMessagingActivity(): ActionBuilders.AndroidActivity.Builder {
-    return setPackageName("com.example.wear.tiles")
-        .setClassName("com.example.wear.tiles.messaging.MainActivity")
 }

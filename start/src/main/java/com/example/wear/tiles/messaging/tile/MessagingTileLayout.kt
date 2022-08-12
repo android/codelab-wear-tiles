@@ -16,155 +16,25 @@
 package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.wear.tiles.ColorBuilders
 import androidx.wear.tiles.DeviceParametersBuilders
-import androidx.wear.tiles.ModifiersBuilders
-import androidx.wear.tiles.material.Button
-import androidx.wear.tiles.material.ButtonColors
-import androidx.wear.tiles.material.ChipColors
-import androidx.wear.tiles.material.CompactChip
-import androidx.wear.tiles.material.layouts.MultiButtonLayout
+import androidx.wear.tiles.material.Text
+import androidx.wear.tiles.material.Typography
 import androidx.wear.tiles.material.layouts.PrimaryLayout
-import com.example.wear.tiles.R
-import com.example.wear.tiles.messaging.Contact
-import com.example.wear.tiles.messaging.MessagingRepo
-import com.example.wear.tiles.tools.emptyClickable
-import com.google.android.horologist.compose.tools.LayoutElementPreview
-import com.google.android.horologist.compose.tools.LayoutRootPreview
-import com.google.android.horologist.compose.tools.buildDeviceParameters
-import com.google.android.horologist.tiles.images.drawableResToImageResource
 
 /**
  * Layout definition for the Messaging Tile.
- *
- * By separating the layout completely, we can pass fake data for the [MessageTilePreview] so it can
- * be rendered in Android Studio (use the "Split" or "Design" editor modes).
  */
 internal fun messagingTileLayout(
     context: Context,
     deviceParameters: DeviceParametersBuilders.DeviceParameters,
-    state: MessagingTileState,
-    contactClickableFactory: (Contact) -> ModifiersBuilders.Clickable,
-    searchButtonClickable: ModifiersBuilders.Clickable,
-    newButtonClickable: ModifiersBuilders.Clickable
 ) = PrimaryLayout.Builder(deviceParameters)
     .setContent(
-        MultiButtonLayout.Builder()
-            .apply {
-                // In a PrimaryLayout with a compact chip at the bottom, we can fit 5 buttons.
-                // We're only taking the first 4 contacts so that we can fit a Search button too.
-                state.contacts.take(4).forEach { contact ->
-                    addButtonContent(
-                        contactLayout(
-                            context = context,
-                            contact = contact,
-                            clickable = contactClickableFactory(contact)
-                        )
-                    )
-                }
-            }
-            .addButtonContent(searchLayout(context, searchButtonClickable))
-            .build()
-    ).setPrimaryChipContent(
-        CompactChip.Builder(
-            /* context = */ context,
-            /* text = */ context.getString(R.string.tile_messaging_create_new),
-            /* clickable = */ newButtonClickable,
-            /* deviceParameters = */ deviceParameters
-        )
-            .setChipColors(ChipColors.primaryChipColors(MessagingTileTheme.colors))
+        Text.Builder(context, "Time to create a tile!")
+            .setTypography(Typography.TYPOGRAPHY_BODY1)
+            .setColor(ColorBuilders.argb(Color.White.toArgb()))
             .build()
     )
     .build()
-
-private fun contactLayout(
-    context: Context,
-    contact: Contact,
-    clickable: ModifiersBuilders.Clickable,
-) = Button.Builder(context, clickable)
-    .setContentDescription(contact.name)
-    .apply {
-        if (contact.avatarUrl != null) {
-            setImageContent(contact.imageResourceId())
-        } else {
-            setTextContent(contact.initials)
-            setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
-        }
-    }
-    .build()
-
-private fun Contact.imageResourceId() = "${MessagingTileRenderer.ID_CONTACT_PREFIX}$id"
-
-private fun searchLayout(
-    context: Context,
-    clickable: ModifiersBuilders.Clickable,
-) = Button.Builder(context, clickable)
-    .setContentDescription(context.getString(R.string.tile_messaging_search))
-    .setIconContent(MessagingTileRenderer.ID_IC_SEARCH)
-    .setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
-    .build()
-
-@WearSmallRoundDevicePreview
-@Composable
-private fun MessageTilePreview() {
-    val context = LocalContext.current
-    val state = MessagingTileState(MessagingRepo.knownContacts)
-    LayoutRootPreview(
-        messagingTileLayout(
-            context,
-            buildDeviceParameters(context.resources),
-            state,
-            { emptyClickable },
-            emptyClickable,
-            emptyClickable,
-        )
-    ) {
-        addIdToImageMapping(
-            state.contacts[1].imageResourceId(),
-            drawableResToImageResource(R.drawable.ali)
-        )
-        addIdToImageMapping(
-            state.contacts[2].imageResourceId(),
-            drawableResToImageResource(R.drawable.taylor)
-        )
-        addIdToImageMapping(
-            MessagingTileRenderer.ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24)
-        )
-    }
-}
-
-@IconSizePreview
-@Composable
-private fun SearchButtonPreview() {
-    LayoutElementPreview(
-        searchLayout(
-            context = LocalContext.current,
-            clickable = emptyClickable
-        )
-    ) {
-        addIdToImageMapping(
-            MessagingTileRenderer.ID_IC_SEARCH,
-            drawableResToImageResource(R.drawable.ic_search_24)
-        )
-    }
-}
-
-@Preview(
-    backgroundColor = 0xff000000,
-    showBackground = true,
-    widthDp = 100,
-    heightDp = 100
-)
-public annotation class IconSizePreview
-
-@Preview(
-    device = Devices.WEAR_OS_SMALL_ROUND,
-    showSystemUi = true,
-    backgroundColor = 0xff000000,
-    showBackground = true,
-    group = "Devices - Small Round",
-)
-public annotation class WearSmallRoundDevicePreview
