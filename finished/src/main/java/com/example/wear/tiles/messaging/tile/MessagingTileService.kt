@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-// TODO: interactions (reload/open activity?)
 class MessagingTileService : CoroutinesTileService() {
 
     private lateinit var repo: MessagingRepo

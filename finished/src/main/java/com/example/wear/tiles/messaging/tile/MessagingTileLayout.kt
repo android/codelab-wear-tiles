@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.tiles.ActionBuilders
 import androidx.wear.tiles.ActionBuilders.AndroidActivity
+import androidx.wear.tiles.ActionBuilders.stringExtra
 import androidx.wear.tiles.DeviceParametersBuilders
 import androidx.wear.tiles.ModifiersBuilders
 import androidx.wear.tiles.material.Button
@@ -31,6 +32,11 @@ import androidx.wear.tiles.material.layouts.MultiButtonLayout
 import androidx.wear.tiles.material.layouts.PrimaryLayout
 import com.example.wear.tiles.R
 import com.example.wear.tiles.messaging.Contact
+import com.example.wear.tiles.messaging.MainActivity.Companion.EXTRA_CONVERSATION_CONTACT
+import com.example.wear.tiles.messaging.MainActivity.Companion.EXTRA_JOURNEY
+import com.example.wear.tiles.messaging.MainActivity.Companion.EXTRA_JOURNEY_CONVERSATION
+import com.example.wear.tiles.messaging.MainActivity.Companion.EXTRA_JOURNEY_NEW
+import com.example.wear.tiles.messaging.MainActivity.Companion.EXTRA_JOURNEY_SEARCH
 import com.example.wear.tiles.messaging.MessagingRepo
 import com.example.wear.tiles.tools.emptyClickable
 import com.google.android.horologist.compose.tools.LayoutElementPreview
@@ -56,34 +62,41 @@ internal fun messagingTileLayout(
                 // In a PrimaryLayout with a compact chip at the bottom, we can fit 5 buttons.
                 // We're only taking the first 4 contacts so that we can fit a Search button too.
                 state.contacts.take(4).forEach { contact ->
-                    addButtonContent(contactLayout(context, contact, emptyClickable))
+                    addButtonContent(
+                        contactLayout(
+                            context = context,
+                            contact = contact,
+                            clickable = launchActivityClickable(
+                                clickableId = "${contact.id}",
+                                androidActivity = openConversation(contact)
+                            )
+                        )
+                    )
                 }
             }
-            .addButtonContent(searchLayout(context, emptyClickable))
+            .addButtonContent(
+                searchLayout(
+                    context = context,
+                    clickable = launchActivityClickable(
+                        clickableId = "search_button",
+                        androidActivity = openSearch()
+                    )
+                )
+            )
             .build()
     ).setPrimaryChipContent(
         CompactChip.Builder(
-            context,
-            context.getString(R.string.tile_messaging_create_new),
-            emptyClickable,
-            deviceParameters
+            /* context = */ context,
+            /* text = */ context.getString(R.string.tile_messaging_create_new),
+            /* clickable = */ launchActivityClickable(
+                clickableId = "new_conversation_button",
+                androidActivity = openNewConversation()
+            ),
+            /* deviceParameters = */ deviceParameters
         )
             .setChipColors(ChipColors.primaryChipColors(MessagingTileTheme.colors))
             .build()
     )
-    .build()
-
-val foo = ModifiersBuilders.Clickable.Builder()
-    .setOnClick(
-        ActionBuilders.LaunchAction.Builder()
-            .setAndroidActivity(
-                AndroidActivity.Builder()
-                        // TODO: set actiity
-                    .build()
-            )
-            .build()
-    )
-    .setId("")
     .build()
 
 private fun contactLayout(
@@ -112,6 +125,37 @@ private fun searchLayout(
     .setIconContent(MessagingTileRenderer.ID_IC_SEARCH)
     .setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
     .build()
+
+private fun launchActivityClickable(clickableId: String, androidActivity: AndroidActivity) =
+    ModifiersBuilders.Clickable.Builder()
+        .setId(clickableId)
+        .setOnClick(
+            ActionBuilders.LaunchAction.Builder()
+                .setAndroidActivity(androidActivity)
+                .build()
+        )
+        .build()
+
+private fun openConversation(contact: Contact) = AndroidActivity.Builder()
+    .setMessagingActivity()
+    .addKeyToExtraMapping(EXTRA_JOURNEY, stringExtra(EXTRA_JOURNEY_CONVERSATION))
+    .addKeyToExtraMapping(EXTRA_CONVERSATION_CONTACT, stringExtra(contact.name))
+    .build()
+
+private fun openSearch() = AndroidActivity.Builder()
+    .setMessagingActivity()
+    .addKeyToExtraMapping(EXTRA_JOURNEY, stringExtra(EXTRA_JOURNEY_SEARCH))
+    .build()
+
+private fun openNewConversation() = AndroidActivity.Builder()
+    .setMessagingActivity()
+    .addKeyToExtraMapping(EXTRA_JOURNEY, stringExtra(EXTRA_JOURNEY_NEW))
+    .build()
+
+private fun AndroidActivity.Builder.setMessagingActivity(): AndroidActivity.Builder {
+    return setPackageName("com.example.wear.tiles")
+        .setClassName("com.example.wear.tiles.messaging.MainActivity")
+}
 
 @WearSmallRoundDevicePreview
 @Composable

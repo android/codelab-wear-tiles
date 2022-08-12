@@ -36,8 +36,28 @@ class MainActivity : ComponentActivity() {
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text("hey you opened this from the app launcher")
+                when (intent.extras?.getString(EXTRA_JOURNEY)) {
+                    EXTRA_JOURNEY_CONVERSATION -> {
+                        val contact = intent.extras?.getString(EXTRA_CONVERSATION_CONTACT)!!
+                        Text("Conversation: $contact")
+                    }
+                    EXTRA_JOURNEY_NEW -> {
+                        Text("New conversation")
+                    }
+                    EXTRA_JOURNEY_SEARCH -> {
+                        Text("Search for a conversation")
+                    }
+                    else -> Text("Opened from app launcher")
+                }
             }
         }
+    }
+
+    companion object {
+        internal const val EXTRA_JOURNEY = "journey"
+        internal const val EXTRA_JOURNEY_CONVERSATION = "journey:conversation"
+        internal const val EXTRA_JOURNEY_SEARCH = "journey:search"
+        internal const val EXTRA_JOURNEY_NEW = "journey:new"
+        internal const val EXTRA_CONVERSATION_CONTACT = "conversation:contact"
     }
 }
