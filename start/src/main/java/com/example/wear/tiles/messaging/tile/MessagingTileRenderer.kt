@@ -27,10 +27,10 @@ import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
 
 class MessagingTileRenderer(context: Context) :
-    SingleTileLayoutRenderer<MessagingTileState, Map<Contact, Bitmap>>(context) {
+    SingleTileLayoutRenderer<Unit, Map<Contact, Bitmap>>(context) {
 
     override fun renderTile(
-        state: MessagingTileState,
+        state: Unit,
         deviceParameters: DeviceParametersBuilders.DeviceParameters
     ): LayoutElementBuilders.LayoutElement {
         return messagingTileLayout(
