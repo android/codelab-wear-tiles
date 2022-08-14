@@ -23,6 +23,7 @@ import androidx.wear.tiles.DeviceParametersBuilders
 import androidx.wear.tiles.material.Text
 import androidx.wear.tiles.material.Typography
 import androidx.wear.tiles.material.layouts.PrimaryLayout
+import com.example.wear.tiles.R
 
 /**
  * Layout definition for the Messaging Tile.
@@ -32,7 +33,7 @@ internal fun messagingTileLayout(
     deviceParameters: DeviceParametersBuilders.DeviceParameters,
 ) = PrimaryLayout.Builder(deviceParameters)
     .setContent(
-        Text.Builder(context, "Time to create a tile!")
+        Text.Builder(context, context.getString(R.string.hello_tile_body))
             .setTypography(Typography.TYPOGRAPHY_BODY1)
             .setColor(ColorBuilders.argb(Color.White.toArgb()))
             .build()

@@ -13,8 +13,12 @@
 -->
 <resources>
     <string name="app_name">Messaging</string>
-    <string name="tile_description">(Codelab) Shows recent conversations</string>
     <string name="tile_label">Recent conversations</string>
+    <string name="tile_description">(Codelab) Shows recent conversations</string>
     <string name="tile_messaging_create_new">New</string>
     <string name="tile_messaging_search">Search</string>
+
+    <string name="hello_tile_label">Hello tile</string>
+    <string name="hello_tile_description">(Codelab) My first tile!</string>
+    <string name="hello_tile_body">Time to create a tile!</string>
 </resources>
