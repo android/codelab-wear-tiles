@@ -30,6 +30,24 @@
             android:value="true" />
 
         <service
+            android:name="com.example.wear.tiles.hello.HelloWorldTileService"
+            android:description="@string/hello_tile_description"
+            android:exported="true"
+            android:icon="@drawable/ic_waving_hand_24"
+            android:label="@string/hello_tile_label"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+
+            <!-- The tile preview shown when configuring tiles on your phone -->
+            <meta-data
+                android:name="androidx.wear.tiles.PREVIEW"
+                android:resource="@drawable/tile_hello" />
+        </service>
+
+        <service
             android:name="com.example.wear.tiles.messaging.tile.MessagingTileService"
             android:description="@string/tile_description"
             android:exported="true"
