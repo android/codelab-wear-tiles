@@ -22,7 +22,6 @@ import androidx.wear.tiles.ResourceBuilders.Resources
 import androidx.wear.tiles.TileBuilders.Tile
 import coil.imageLoader
 import com.example.wear.tiles.messaging.MessagingRepo
-import com.example.wear.tiles.messaging.fetchAvatarsFromNetwork
 import com.google.android.horologist.tiles.CoroutinesTileService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -51,7 +50,8 @@ class MessagingTileService : CoroutinesTileService() {
     }
 
     override suspend fun tileRequest(requestParams: TileRequest): Tile {
-        return renderer.renderTimeline(Unit, requestParams)
+        val tileState = latestTileState()
+        return renderer.renderTimeline(tileState, requestParams)
     }
 
     /**

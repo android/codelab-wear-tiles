@@ -17,25 +17,31 @@ package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.wear.tiles.ColorBuilders
 import androidx.wear.tiles.DeviceParametersBuilders
 import androidx.wear.tiles.LayoutElementBuilders
 import androidx.wear.tiles.ResourceBuilders
+import androidx.wear.tiles.material.Text
+import androidx.wear.tiles.material.Typography
+import androidx.wear.tiles.material.layouts.PrimaryLayout
 import com.example.wear.tiles.R
 import com.example.wear.tiles.messaging.Contact
-import com.example.wear.tiles.messaging.bitmapToImageResource
 import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
 
 class MessagingTileRenderer(context: Context) :
-    SingleTileLayoutRenderer<Unit, Map<Contact, Bitmap>>(context) {
+    SingleTileLayoutRenderer<MessagingTileState, Map<Contact, Bitmap>>(context) {
 
     override fun renderTile(
-        state: Unit,
+        state: MessagingTileState,
         deviceParameters: DeviceParametersBuilders.DeviceParameters
     ): LayoutElementBuilders.LayoutElement {
         return messagingTileLayout(
             context = context,
-            deviceParameters = deviceParameters
+            deviceParameters = deviceParameters,
+            state = state
         )
     }
 
@@ -48,7 +54,7 @@ class MessagingTileRenderer(context: Context) :
 
         resourceResults.forEach { (contact, bitmap) ->
             addIdToImageMapping(
-                /* id = */ "$ID_CONTACT_PREFIX${contact.id}",
+                /* id = */ contact.imageResourceId(),
                 /* image = */ bitmapToImageResource(bitmap)
             )
         }
@@ -57,6 +63,21 @@ class MessagingTileRenderer(context: Context) :
     companion object {
 
         internal const val ID_IC_SEARCH = "ic_search"
-        internal const val ID_CONTACT_PREFIX = "contact:"
     }
 }
+
+/**
+ * Layout definition for the Messaging Tile.
+ */
+private fun messagingTileLayout(
+    context: Context,
+    deviceParameters: DeviceParametersBuilders.DeviceParameters,
+    state: MessagingTileState
+) = PrimaryLayout.Builder(deviceParameters)
+    .setContent(
+        Text.Builder(context, context.getString(R.string.hello_tile_body))
+            .setTypography(Typography.TYPOGRAPHY_BODY1)
+            .setColor(ColorBuilders.argb(Color.White.toArgb()))
+            .build()
+    )
+    .build()

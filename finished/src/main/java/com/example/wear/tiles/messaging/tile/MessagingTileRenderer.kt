@@ -17,15 +17,27 @@ package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.wear.tiles.ActionBuilders
+import android.graphics.drawable.BitmapDrawable
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.wear.tiles.DeviceParametersBuilders
 import androidx.wear.tiles.LayoutElementBuilders
 import androidx.wear.tiles.ModifiersBuilders
 import androidx.wear.tiles.ResourceBuilders
+import androidx.wear.tiles.material.Button
+import androidx.wear.tiles.material.ButtonColors
+import androidx.wear.tiles.material.ChipColors
+import androidx.wear.tiles.material.CompactChip
+import androidx.wear.tiles.material.layouts.MultiButtonLayout
+import androidx.wear.tiles.material.layouts.PrimaryLayout
 import com.example.wear.tiles.R
 import com.example.wear.tiles.messaging.Contact
-import com.example.wear.tiles.messaging.MainActivity
-import com.example.wear.tiles.messaging.bitmapToImageResource
+import com.example.wear.tiles.messaging.MessagingRepo
+import com.example.wear.tiles.tools.IconSizePreview
+import com.example.wear.tiles.tools.WearSmallRoundDevicePreview
+import com.example.wear.tiles.tools.emptyClickable
+import com.google.android.horologist.compose.tools.LayoutElementPreview
+import com.google.android.horologist.compose.tools.TileLayoutPreview
 import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
 
@@ -60,7 +72,7 @@ class MessagingTileRenderer(context: Context) :
 
         resourceResults.forEach { (contact, bitmap) ->
             addIdToImageMapping(
-                /* id = */ "$ID_CONTACT_PREFIX${contact.id}",
+                /* id = */ contact.imageResourceId(),
                 /* image = */ bitmapToImageResource(bitmap)
             )
         }
@@ -69,55 +81,104 @@ class MessagingTileRenderer(context: Context) :
     companion object {
 
         internal const val ID_IC_SEARCH = "ic_search"
-        internal const val ID_CONTACT_PREFIX = "contact:"
     }
 }
 
 /**
- * Creates a Clickable that can be used to launch an activity.
+ * Layout definition for the Messaging Tile.
+ *
+ * By separating the layout completely, we can pass fake data for the [MessageTilePreview] so it can
+ * be rendered in Android Studio (use the "Split" or "Design" editor modes).
  */
-private fun launchActivityClickable(
-    clickableId: String,
-    androidActivity: ActionBuilders.AndroidActivity
-) =
-    ModifiersBuilders.Clickable.Builder()
-        .setId(clickableId)
-        .setOnClick(
-            ActionBuilders.LaunchAction.Builder()
-                .setAndroidActivity(androidActivity)
-                .build()
+private fun messagingTileLayout(
+    context: Context,
+    deviceParameters: DeviceParametersBuilders.DeviceParameters,
+    state: MessagingTileState,
+    contactClickableFactory: (Contact) -> ModifiersBuilders.Clickable,
+    searchButtonClickable: ModifiersBuilders.Clickable,
+    newButtonClickable: ModifiersBuilders.Clickable
+) = PrimaryLayout.Builder(deviceParameters)
+    .setContent(
+        MultiButtonLayout.Builder()
+            .apply {
+                // In a PrimaryLayout with a compact chip at the bottom, we can fit 5 buttons.
+                // We're only taking the first 4 contacts so that we can fit a Search button too.
+                state.contacts.take(4).forEach { contact ->
+                    addButtonContent(
+                        contactLayout(
+                            context = context,
+                            contact = contact,
+                            clickable = contactClickableFactory(contact)
+                        )
+                    )
+                }
+            }
+            .addButtonContent(searchLayout(context, searchButtonClickable))
+            .build()
+    ).setPrimaryChipContent(
+        CompactChip.Builder(
+            /* context = */ context,
+            /* text = */ context.getString(R.string.tile_messaging_create_new),
+            /* clickable = */ newButtonClickable,
+            /* deviceParameters = */ deviceParameters
         )
-        .build()
-
-private fun openConversation(contact: Contact) = ActionBuilders.AndroidActivity.Builder()
-    .setMessagingActivity()
-    .addKeyToExtraMapping(
-        MainActivity.EXTRA_JOURNEY,
-        ActionBuilders.stringExtra(MainActivity.EXTRA_JOURNEY_CONVERSATION)
-    )
-    .addKeyToExtraMapping(
-        MainActivity.EXTRA_CONVERSATION_CONTACT,
-        ActionBuilders.stringExtra(contact.name)
+            .setChipColors(ChipColors.primaryChipColors(MessagingTileTheme.colors))
+            .build()
     )
     .build()
 
-private fun openSearch() = ActionBuilders.AndroidActivity.Builder()
-    .setMessagingActivity()
-    .addKeyToExtraMapping(
-        MainActivity.EXTRA_JOURNEY,
-        ActionBuilders.stringExtra(MainActivity.EXTRA_JOURNEY_SEARCH)
-    )
+private fun contactLayout(
+    context: Context,
+    contact: Contact,
+    clickable: ModifiersBuilders.Clickable,
+) = Button.Builder(context, clickable)
+    .setContentDescription(contact.name)
+    .apply {
+        if (contact.avatarUrl != null) {
+            setImageContent(contact.imageResourceId())
+        } else {
+            setTextContent(contact.initials)
+            setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
+        }
+    }
     .build()
 
-private fun openNewConversation() = ActionBuilders.AndroidActivity.Builder()
-    .setMessagingActivity()
-    .addKeyToExtraMapping(
-        MainActivity.EXTRA_JOURNEY,
-        ActionBuilders.stringExtra(MainActivity.EXTRA_JOURNEY_NEW)
-    )
+private fun searchLayout(
+    context: Context,
+    clickable: ModifiersBuilders.Clickable,
+) = Button.Builder(context, clickable)
+    .setContentDescription(context.getString(R.string.tile_messaging_search))
+    .setIconContent(MessagingTileRenderer.ID_IC_SEARCH)
+    .setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
     .build()
 
-private fun ActionBuilders.AndroidActivity.Builder.setMessagingActivity(): ActionBuilders.AndroidActivity.Builder {
-    return setPackageName("com.example.wear.tiles")
-        .setClassName("com.example.wear.tiles.messaging.MainActivity")
+@WearSmallRoundDevicePreview
+@Composable
+fun MessagingTileRendererPreview() {
+    val state = MessagingTileState(MessagingRepo.knownContacts)
+    val context = LocalContext.current
+    TileLayoutPreview(
+        state = state,
+        resourceState = mapOf(
+            state.contacts[1] to (context.getDrawable(R.drawable.ali) as BitmapDrawable).bitmap,
+            state.contacts[2] to (context.getDrawable(R.drawable.taylor) as BitmapDrawable).bitmap,
+        ),
+        renderer = MessagingTileRenderer(context)
+    )
+}
+
+@IconSizePreview
+@Composable
+private fun SearchButtonPreview() {
+    LayoutElementPreview(
+        searchLayout(
+            context = LocalContext.current,
+            clickable = emptyClickable
+        )
+    ) {
+        addIdToImageMapping(
+            MessagingTileRenderer.ID_IC_SEARCH,
+            drawableResToImageResource(R.drawable.ic_search_24)
+        )
+    }
 }

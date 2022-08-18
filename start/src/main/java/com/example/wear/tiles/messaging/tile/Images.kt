@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.wear.tiles.messaging
+package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -23,8 +23,7 @@ import androidx.wear.tiles.ResourceBuilders
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
-import com.example.wear.tiles.messaging.tile.MessagingTileRenderer
-import com.example.wear.tiles.messaging.tile.MessagingTileState
+import com.example.wear.tiles.messaging.Contact
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -44,8 +43,8 @@ internal suspend fun ImageLoader.fetchAvatarsFromNetwork(
     val requestedAvatars: List<Contact> = if (requestParams.resourceIds.isEmpty()) {
         tileState.contacts
     } else {
-        tileState.contacts.filter {
-            requestParams.resourceIds.contains(MessagingTileRenderer.ID_CONTACT_PREFIX + it.id)
+        tileState.contacts.filter { contact ->
+            requestParams.resourceIds.contains(contact.imageResourceId())
         }
     }
 
@@ -60,6 +59,8 @@ internal suspend fun ImageLoader.fetchAvatarsFromNetwork(
 
     return images
 }
+
+internal fun Contact.imageResourceId() = "contact:$id"
 
 private suspend fun ImageLoader.loadAvatar(
     context: Context,
