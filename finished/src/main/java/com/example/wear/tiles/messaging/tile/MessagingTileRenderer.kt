@@ -39,6 +39,7 @@ import com.example.wear.tiles.tools.emptyClickable
 import com.google.android.horologist.compose.tools.LayoutElementPreview
 import com.google.android.horologist.compose.tools.TileLayoutPreview
 import com.google.android.horologist.tiles.images.drawableResToImageResource
+import com.google.android.horologist.tiles.images.toImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
 
 class MessagingTileRenderer(context: Context) :
@@ -73,7 +74,7 @@ class MessagingTileRenderer(context: Context) :
         resourceResults.forEach { (contact, bitmap) ->
             addIdToImageMapping(
                 /* id = */ contact.imageResourceId(),
-                /* image = */ bitmapToImageResource(bitmap)
+                /* image = */ bitmap.toImageResource()
             )
         }
     }
