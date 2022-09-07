@@ -47,13 +47,13 @@ class MessagingTileRenderer(context: Context) :
     }
 
     override fun ResourceBuilders.Resources.Builder.produceRequestedResources(
-        resourceResults: Map<Contact, Bitmap>,
+        resourceState: Map<Contact, Bitmap>,
         deviceParameters: DeviceParametersBuilders.DeviceParameters,
         resourceIds: MutableList<String>
     ) {
         addIdToImageMapping(ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24))
 
-        resourceResults.forEach { (contact, bitmap) ->
+        resourceState.forEach { (contact, bitmap) ->
             addIdToImageMapping(
                 /* id = */ contact.imageResourceId(),
                 /* image = */ bitmap.toImageResource()

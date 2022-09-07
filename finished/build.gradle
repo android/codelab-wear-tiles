@@ -59,10 +59,10 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview:$composeVersion"
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    def tilesVersion = '1.1.0-beta01'
+    def tilesVersion = '1.1.0'
     implementation "androidx.wear.tiles:tiles-material:$tilesVersion"
     implementation 'androidx.wear:wear:1.2.0'
-    def horologistVersion = '0.1.1'
+    def horologistVersion = '0.1.8'
     implementation "com.google.android.horologist:horologist-compose-tools:$horologistVersion"
     implementation "com.google.android.horologist:horologist-tiles:$horologistVersion"
     implementation 'io.coil-kt:coil-compose:2.1.0'
