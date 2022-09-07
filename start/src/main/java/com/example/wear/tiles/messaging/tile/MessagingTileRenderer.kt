@@ -17,10 +17,8 @@ package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.wear.tiles.ColorBuilders
 import androidx.wear.tiles.DeviceParametersBuilders
 import androidx.wear.tiles.LayoutElementBuilders
@@ -30,9 +28,6 @@ import androidx.wear.tiles.material.Typography
 import androidx.wear.tiles.material.layouts.PrimaryLayout
 import com.example.wear.tiles.R
 import com.example.wear.tiles.messaging.Contact
-import com.example.wear.tiles.messaging.MessagingRepo
-import com.example.wear.tiles.tools.WearDevicePreview
-import com.google.android.horologist.compose.tools.TileLayoutPreview
 import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.images.toImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
@@ -87,13 +82,3 @@ private fun messagingTileLayout(
             .build()
     )
     .build()
-
-@WearDevicePreview
-@Composable
-fun MessagingTileRendererPreview() {
-    TileLayoutPreview(
-        state = MessagingTileState(MessagingRepo.knownContacts),
-        resourceState = emptyMap(),
-        renderer = MessagingTileRenderer(LocalContext.current)
-    )
-}
