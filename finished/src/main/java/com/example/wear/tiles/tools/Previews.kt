@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
     showBackground = true,
     group = "Devices - Small Round",
 )
-public annotation class WearSmallRoundDevicePreview
+public annotation class WearDevicePreview
 
 @Preview(
     backgroundColor = 0xff000000,

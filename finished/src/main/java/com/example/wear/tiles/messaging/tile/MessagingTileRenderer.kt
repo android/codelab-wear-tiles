@@ -34,7 +34,7 @@ import com.example.wear.tiles.R
 import com.example.wear.tiles.messaging.Contact
 import com.example.wear.tiles.messaging.MessagingRepo
 import com.example.wear.tiles.tools.IconSizePreview
-import com.example.wear.tiles.tools.WearSmallRoundDevicePreview
+import com.example.wear.tiles.tools.WearDevicePreview
 import com.example.wear.tiles.tools.emptyClickable
 import com.google.android.horologist.compose.tools.LayoutElementPreview
 import com.google.android.horologist.compose.tools.TileLayoutPreview
@@ -65,13 +65,13 @@ class MessagingTileRenderer(context: Context) :
     }
 
     override fun ResourceBuilders.Resources.Builder.produceRequestedResources(
-        resourceResults: Map<Contact, Bitmap>,
+        resourceState: Map<Contact, Bitmap>,
         deviceParameters: DeviceParametersBuilders.DeviceParameters,
         resourceIds: MutableList<String>
     ) {
         addIdToImageMapping(ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24))
 
-        resourceResults.forEach { (contact, bitmap) ->
+        resourceState.forEach { (contact, bitmap) ->
             addIdToImageMapping(
                 /* id = */ contact.imageResourceId(),
                 /* image = */ bitmap.toImageResource()
@@ -153,7 +153,7 @@ private fun searchLayout(
     .setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
     .build()
 
-@WearSmallRoundDevicePreview
+@WearDevicePreview
 @Composable
 fun MessagingTileRendererPreview() {
     val state = MessagingTileState(MessagingRepo.knownContacts)
