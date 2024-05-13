@@ -58,10 +58,10 @@ dependencies {
     implementation "androidx.concurrent:concurrent-futures-ktx:1.1.0"
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    def tilesVersion = '1.2.0-alpha02'
-    implementation "androidx.wear.protolayout:protolayout:$tilesVersion"
-    implementation "androidx.wear.protolayout:protolayout-expression:$tilesVersion"
-    implementation "androidx.wear.protolayout:protolayout-material:$tilesVersion"
+    def protoLayoutVersion = '1.2.0-alpha02'
+    implementation "androidx.wear.protolayout:protolayout:$protoLayoutVersion"
+    implementation "androidx.wear.protolayout:protolayout-expression:$protoLayoutVersion"
+    implementation "androidx.wear.protolayout:protolayout-material:$protoLayoutVersion"
     implementation "androidx.wear.tiles:tiles:1.4.0-alpha02"
     debugImplementation "androidx.wear.tiles:tiles-tooling:1.4.0-alpha02"
     debugImplementation "androidx.wear.tiles:tiles-tooling-preview:1.4.0-alpha02"
