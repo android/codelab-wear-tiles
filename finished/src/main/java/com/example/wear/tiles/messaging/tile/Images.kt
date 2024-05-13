@@ -65,6 +65,7 @@ private suspend fun ImageLoader.loadAvatar(
     contact: Contact,
     size: Int? = 64
 ): Bitmap? {
+    if (contact.avatarUrl.isNullOrEmpty()) return null
     val request = ImageRequest.Builder(context)
         .data(contact.avatarUrl)
         .apply {
