@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalHorologistApi::class)
+
 package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
@@ -38,7 +40,6 @@ import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.images.toImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
 
-@ExperimentalHorologistApi
 class MessagingTileRenderer(context: Context) :
     SingleTileLayoutRenderer<MessagingTileState, Map<Contact, Bitmap>>(context) {
 
@@ -88,7 +89,6 @@ class MessagingTileRenderer(context: Context) :
  * By separating the layout completely, we can pass fake data for the [MessageTilePreview] so it can
  * be rendered in Android Studio (use the "Split" or "Design" editor modes).
  */
-@ExperimentalHorologistApi
 private fun messagingTileLayout(
     context: Context,
     deviceParameters: DeviceParametersBuilders.DeviceParameters,
@@ -115,7 +115,8 @@ private fun messagingTileLayout(
             }
             .addButtonContent(searchLayout(context, searchButtonClickable))
             .build()
-    ).setPrimaryChipContent(
+    )
+    .setPrimaryChipContent(
         CompactChip.Builder(
             /* context = */ context,
             /* text = */ context.getString(R.string.tile_messaging_create_new),
@@ -143,7 +144,6 @@ private fun contactLayout(
     }
     .build()
 
-@ExperimentalHorologistApi
 private fun searchLayout(
     context: Context,
     clickable: ModifiersBuilders.Clickable,
@@ -153,14 +153,18 @@ private fun searchLayout(
     .setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
     .build()
 
-@ExperimentalHorologistApi
 private fun previewResources() = Resources.Builder()
     .addIdToImageMapping(ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24))
-    .addIdToImageMapping(knownContacts[1].imageResourceId(), drawableResToImageResource(R.drawable.ali))
-    .addIdToImageMapping(knownContacts[2].imageResourceId(), drawableResToImageResource(R.drawable.taylor))
+    .addIdToImageMapping(
+        knownContacts[1].imageResourceId(),
+        drawableResToImageResource(R.drawable.ali)
+    )
+    .addIdToImageMapping(
+        knownContacts[2].imageResourceId(),
+        drawableResToImageResource(R.drawable.taylor)
+    )
     .build()
 
-@ExperimentalHorologistApi
 @Preview(device = WearDevices.SMALL_ROUND)
 @Preview(device = WearDevices.LARGE_ROUND)
 fun messagingTileLayoutPreview(context: Context): TilePreviewData {

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalHorologistApi::class)
+
 package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
@@ -33,7 +35,6 @@ import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.images.toImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
 
-@ExperimentalHorologistApi
 class MessagingTileRenderer(context: Context) :
     SingleTileLayoutRenderer<MessagingTileState, Map<Contact, Bitmap>>(context) {
 
@@ -72,7 +73,6 @@ class MessagingTileRenderer(context: Context) :
 /**
  * Layout definition for the Messaging Tile.
  */
-@ExperimentalHorologistApi
 private fun messagingTileLayout(
     context: Context,
     deviceParameters: DeviceParametersBuilders.DeviceParameters,

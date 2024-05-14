@@ -75,7 +75,7 @@ class MessagingTileService : SuspendingTileService() {
      * an update. For this sample, we're updating the repository with fake data
      * ([MessagingRepo.knownContacts]).
      *
-     * In a more complete example, tiles, complications and the main app (/overlay) would
+     * In a more complete example, tiles, complications and the main app would
      * share a common data source so it's less likely that an initial data refresh triggered by the
      * tile would be necessary.
      */
