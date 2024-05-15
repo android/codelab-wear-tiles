@@ -15,8 +15,8 @@
  */
 package com.example.wear.tiles.messaging.tile
 
-import androidx.wear.tiles.ActionBuilders
-import androidx.wear.tiles.ModifiersBuilders
+import androidx.wear.protolayout.ActionBuilders
+import androidx.wear.protolayout.ModifiersBuilders
 import com.example.wear.tiles.messaging.Contact
 import com.example.wear.tiles.messaging.MainActivity
 

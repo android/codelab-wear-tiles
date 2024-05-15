@@ -16,13 +16,14 @@
 package com.example.wear.tiles.messaging.tile
 
 import androidx.lifecycle.lifecycleScope
+import androidx.wear.protolayout.ResourceBuilders
 import androidx.wear.tiles.RequestBuilders.ResourcesRequest
 import androidx.wear.tiles.RequestBuilders.TileRequest
-import androidx.wear.tiles.ResourceBuilders.Resources
 import androidx.wear.tiles.TileBuilders.Tile
 import coil.imageLoader
 import com.example.wear.tiles.messaging.MessagingRepo
-import com.google.android.horologist.tiles.CoroutinesTileService
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.tiles.SuspendingTileService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -30,7 +31,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class MessagingTileService : CoroutinesTileService() {
+@OptIn(ExperimentalHorologistApi::class)
+class MessagingTileService : SuspendingTileService() {
 
     private lateinit var repo: MessagingRepo
     private lateinit var renderer: MessagingTileRenderer
@@ -73,7 +75,7 @@ class MessagingTileService : CoroutinesTileService() {
      * an update. For this sample, we're updating the repository with fake data
      * ([MessagingRepo.knownContacts]).
      *
-     * In a more complete example, tiles, complications and the main app (/overlay) would
+     * In a more complete example, tiles, complications and the main app would
      * share a common data source so it's less likely that an initial data refresh triggered by the
      * tile would be necessary.
      */
@@ -81,7 +83,7 @@ class MessagingTileService : CoroutinesTileService() {
         repo.updateContacts(MessagingRepo.knownContacts)
     }
 
-    override suspend fun resourcesRequest(requestParams: ResourcesRequest): Resources {
+    override suspend fun resourcesRequest(requestParams: ResourcesRequest): ResourceBuilders.Resources {
         // Since we know there's only 2 very small avatars, we'll fetch them
         // as part of this resource request.
         val avatars = imageLoader.fetchAvatarsFromNetwork(

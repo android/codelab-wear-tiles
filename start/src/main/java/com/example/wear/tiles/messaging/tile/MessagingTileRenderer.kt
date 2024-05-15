@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalHorologistApi::class)
+
 package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.wear.tiles.ColorBuilders
-import androidx.wear.tiles.DeviceParametersBuilders
-import androidx.wear.tiles.LayoutElementBuilders
-import androidx.wear.tiles.ResourceBuilders
-import androidx.wear.tiles.material.Text
-import androidx.wear.tiles.material.Typography
-import androidx.wear.tiles.material.layouts.PrimaryLayout
+import androidx.wear.protolayout.ColorBuilders
+import androidx.wear.protolayout.DeviceParametersBuilders
+import androidx.wear.protolayout.LayoutElementBuilders
+import androidx.wear.protolayout.ResourceBuilders.Resources
+import androidx.wear.protolayout.material.Text
+import androidx.wear.protolayout.material.Typography
+import androidx.wear.protolayout.material.layouts.PrimaryLayout
 import com.example.wear.tiles.R
 import com.example.wear.tiles.messaging.Contact
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.images.toImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
@@ -46,10 +49,10 @@ class MessagingTileRenderer(context: Context) :
         )
     }
 
-    override fun ResourceBuilders.Resources.Builder.produceRequestedResources(
+    override fun Resources.Builder.produceRequestedResources(
         resourceState: Map<Contact, Bitmap>,
         deviceParameters: DeviceParametersBuilders.DeviceParameters,
-        resourceIds: MutableList<String>
+        resourceIds: List<String>
     ) {
         addIdToImageMapping(ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24))
 
@@ -62,9 +65,9 @@ class MessagingTileRenderer(context: Context) :
     }
 
     companion object {
-
         internal const val ID_IC_SEARCH = "ic_search"
     }
+
 }
 
 /**
@@ -75,6 +78,7 @@ private fun messagingTileLayout(
     deviceParameters: DeviceParametersBuilders.DeviceParameters,
     state: MessagingTileState
 ) = PrimaryLayout.Builder(deviceParameters)
+    .setResponsiveContentInsetEnabled(true)
     .setContent(
         Text.Builder(context, context.getString(R.string.hello_tile_body))
             .setTypography(Typography.TYPOGRAPHY_BODY1)

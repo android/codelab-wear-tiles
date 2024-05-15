@@ -13,31 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalHorologistApi::class)
+
 package com.example.wear.tiles.messaging.tile
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.wear.tiles.DeviceParametersBuilders
-import androidx.wear.tiles.LayoutElementBuilders
-import androidx.wear.tiles.ModifiersBuilders
-import androidx.wear.tiles.ResourceBuilders
-import androidx.wear.tiles.material.Button
-import androidx.wear.tiles.material.ButtonColors
-import androidx.wear.tiles.material.ChipColors
-import androidx.wear.tiles.material.CompactChip
-import androidx.wear.tiles.material.layouts.MultiButtonLayout
-import androidx.wear.tiles.material.layouts.PrimaryLayout
+import androidx.wear.protolayout.DeviceParametersBuilders
+import androidx.wear.protolayout.ModifiersBuilders
+import androidx.wear.protolayout.ResourceBuilders.Resources
+import androidx.wear.protolayout.material.Button
+import androidx.wear.protolayout.material.ButtonColors
+import androidx.wear.protolayout.material.ChipColors
+import androidx.wear.protolayout.material.CompactChip
+import androidx.wear.protolayout.material.layouts.MultiButtonLayout
+import androidx.wear.protolayout.material.layouts.PrimaryLayout
+import androidx.wear.tiles.tooling.preview.Preview
+import androidx.wear.tiles.tooling.preview.TilePreviewData
+import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.wear.tiles.R
 import com.example.wear.tiles.messaging.Contact
-import com.example.wear.tiles.messaging.MessagingRepo
-import com.example.wear.tiles.tools.IconSizePreview
-import com.example.wear.tiles.tools.WearDevicePreview
-import com.example.wear.tiles.tools.emptyClickable
-import com.google.android.horologist.compose.tools.LayoutElementPreview
-import com.google.android.horologist.compose.tools.TileLayoutPreview
+import com.example.wear.tiles.messaging.MessagingRepo.Companion.knownContacts
+import com.example.wear.tiles.messaging.tile.MessagingTileRenderer.Companion.ID_IC_SEARCH
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.tiles.images.drawableResToImageResource
 import com.google.android.horologist.tiles.images.toImageResource
 import com.google.android.horologist.tiles.render.SingleTileLayoutRenderer
@@ -48,7 +46,7 @@ class MessagingTileRenderer(context: Context) :
     override fun renderTile(
         state: MessagingTileState,
         deviceParameters: DeviceParametersBuilders.DeviceParameters
-    ): LayoutElementBuilders.LayoutElement {
+    ): androidx.wear.protolayout.LayoutElementBuilders.LayoutElement {
         return messagingTileLayout(
             context = context,
             deviceParameters = deviceParameters,
@@ -64,10 +62,10 @@ class MessagingTileRenderer(context: Context) :
         )
     }
 
-    override fun ResourceBuilders.Resources.Builder.produceRequestedResources(
+    override fun Resources.Builder.produceRequestedResources(
         resourceState: Map<Contact, Bitmap>,
         deviceParameters: DeviceParametersBuilders.DeviceParameters,
-        resourceIds: MutableList<String>
+        resourceIds: List<String>
     ) {
         addIdToImageMapping(ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24))
 
@@ -80,9 +78,9 @@ class MessagingTileRenderer(context: Context) :
     }
 
     companion object {
-
         internal const val ID_IC_SEARCH = "ic_search"
     }
+
 }
 
 /**
@@ -99,6 +97,7 @@ private fun messagingTileLayout(
     searchButtonClickable: ModifiersBuilders.Clickable,
     newButtonClickable: ModifiersBuilders.Clickable
 ) = PrimaryLayout.Builder(deviceParameters)
+    .setResponsiveContentInsetEnabled(true)
     .setContent(
         MultiButtonLayout.Builder()
             .apply {
@@ -116,7 +115,8 @@ private fun messagingTileLayout(
             }
             .addButtonContent(searchLayout(context, searchButtonClickable))
             .build()
-    ).setPrimaryChipContent(
+    )
+    .setPrimaryChipContent(
         CompactChip.Builder(
             /* context = */ context,
             /* text = */ context.getString(R.string.tile_messaging_create_new),
@@ -149,37 +149,30 @@ private fun searchLayout(
     clickable: ModifiersBuilders.Clickable,
 ) = Button.Builder(context, clickable)
     .setContentDescription(context.getString(R.string.tile_messaging_search))
-    .setIconContent(MessagingTileRenderer.ID_IC_SEARCH)
+    .setIconContent(ID_IC_SEARCH)
     .setButtonColors(ButtonColors.secondaryButtonColors(MessagingTileTheme.colors))
     .build()
 
-@WearDevicePreview
-@Composable
-fun MessagingTileRendererPreview() {
-    val state = MessagingTileState(MessagingRepo.knownContacts)
-    val context = LocalContext.current
-    TileLayoutPreview(
-        state = state,
-        resourceState = mapOf(
-            state.contacts[1] to (context.getDrawable(R.drawable.ali) as BitmapDrawable).bitmap,
-            state.contacts[2] to (context.getDrawable(R.drawable.taylor) as BitmapDrawable).bitmap,
-        ),
-        renderer = MessagingTileRenderer(context)
+private fun previewResources() = Resources.Builder()
+    .addIdToImageMapping(ID_IC_SEARCH, drawableResToImageResource(R.drawable.ic_search_24))
+    .addIdToImageMapping(
+        knownContacts[1].imageResourceId(),
+        drawableResToImageResource(R.drawable.ali)
     )
-}
+    .addIdToImageMapping(
+        knownContacts[2].imageResourceId(),
+        drawableResToImageResource(R.drawable.taylor)
+    )
+    .build()
 
-@IconSizePreview
-@Composable
-private fun SearchButtonPreview() {
-    LayoutElementPreview(
-        searchLayout(
-            context = LocalContext.current,
-            clickable = emptyClickable
-        )
-    ) {
-        addIdToImageMapping(
-            MessagingTileRenderer.ID_IC_SEARCH,
-            drawableResToImageResource(R.drawable.ic_search_24)
+@Preview(device = WearDevices.SMALL_ROUND)
+@Preview(device = WearDevices.LARGE_ROUND)
+fun messagingTileLayoutPreview(context: Context): TilePreviewData {
+
+    return TilePreviewData({ previewResources() }) { request ->
+        MessagingTileRenderer(context).renderTimeline(
+            MessagingTileState(knownContacts),
+            request
         )
     }
 }
