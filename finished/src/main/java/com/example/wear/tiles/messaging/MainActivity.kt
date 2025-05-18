@@ -31,10 +31,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                contentAlignment = Alignment.Center,
             ) {
                 when (intent.extras?.getString(EXTRA_JOURNEY)) {
                     EXTRA_JOURNEY_CONVERSATION -> {
@@ -43,9 +41,6 @@ class MainActivity : ComponentActivity() {
                     }
                     EXTRA_JOURNEY_NEW -> {
                         Text("New conversation")
-                    }
-                    EXTRA_JOURNEY_SEARCH -> {
-                        Text("Search for a conversation")
                     }
                     else -> Text("Opened from app launcher")
                 }
@@ -56,7 +51,6 @@ class MainActivity : ComponentActivity() {
     companion object {
         internal const val EXTRA_JOURNEY = "journey"
         internal const val EXTRA_JOURNEY_CONVERSATION = "journey:conversation"
-        internal const val EXTRA_JOURNEY_SEARCH = "journey:search"
         internal const val EXTRA_JOURNEY_NEW = "journey:new"
         internal const val EXTRA_CONVERSATION_CONTACT = "conversation:contact"
     }

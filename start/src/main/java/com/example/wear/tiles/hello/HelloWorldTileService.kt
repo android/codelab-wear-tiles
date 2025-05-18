@@ -15,12 +15,21 @@
  */
 package com.example.wear.tiles.hello
 
-import androidx.wear.protolayout.DimensionBuilders
+import android.content.Context
+import androidx.wear.protolayout.DeviceParametersBuilders
 import androidx.wear.protolayout.LayoutElementBuilders
 import androidx.wear.protolayout.ResourceBuilders
-import androidx.wear.protolayout.TimelineBuilders
+import androidx.wear.protolayout.TimelineBuilders.Timeline
+import androidx.wear.protolayout.material3.materialScope
+import androidx.wear.protolayout.material3.primaryLayout
+import androidx.wear.protolayout.material3.text
+import androidx.wear.protolayout.types.layoutString
 import androidx.wear.tiles.RequestBuilders
-import androidx.wear.tiles.TileBuilders
+import androidx.wear.tiles.TileBuilders.Tile
+import androidx.wear.tiles.tooling.preview.Preview
+import androidx.wear.tiles.tooling.preview.TilePreviewData
+import androidx.wear.tiles.tooling.preview.TilePreviewHelper
+import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.wear.tiles.R
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.tiles.SuspendingTileService
@@ -33,33 +42,42 @@ class HelloWorldTileService : SuspendingTileService() {
     override suspend fun resourcesRequest(
         requestParams: RequestBuilders.ResourcesRequest
     ): ResourceBuilders.Resources {
-        return ResourceBuilders.Resources.Builder()
-            .setVersion(RESOURCES_VERSION)
-            .build()
+        return ResourceBuilders.Resources.Builder().setVersion(RESOURCES_VERSION).build()
     }
 
-    override suspend fun tileRequest(
-        requestParams: RequestBuilders.TileRequest
-    ): TileBuilders.Tile {
-        val singleTileTimeline = TimelineBuilders.Timeline.Builder()
-            .addTimelineEntry(
-                TimelineBuilders.TimelineEntry.Builder()
-                    .setLayout(
-                        LayoutElementBuilders.Layout.Builder()
-                            .setRoot(tileLayout())
-                            .build()
+    override suspend fun tileRequest(requestParams: RequestBuilders.TileRequest): Tile {
+        return Tile.Builder()
+            .setResourcesVersion(RESOURCES_VERSION)
+            .setTileTimeline(
+                Timeline.fromLayoutElement(
+                    tileLayout(
+                        this,
+                        requestParams.deviceConfiguration,
+                        getString(R.string.hello_tile_body),
                     )
-                    .build()
+                )
             )
             .build()
-
-        return TileBuilders.Tile.Builder()
-            .setResourcesVersion(RESOURCES_VERSION)
-            .setTileTimeline(singleTileTimeline)
-            .build()
     }
+}
 
-    private fun tileLayout(): LayoutElementBuilders.LayoutElement {
-        TODO()
-    }
+fun tileLayout(
+    context: Context,
+    deviceConfiguration: DeviceParametersBuilders.DeviceParameters,
+    message: String,
+): LayoutElementBuilders.LayoutElement {
+    TODO()
+}
+
+@Preview(device = WearDevices.SMALL_ROUND, name = "Small Round")
+@Preview(device = WearDevices.LARGE_ROUND, name = "Large Round")
+internal fun helloLayoutPreview(context: Context): TilePreviewData {
+    return TilePreviewData(
+        onTileRequest = { requestParams ->
+            TilePreviewHelper.singleTimelineEntryTileBuilder(
+                tileLayout(context, requestParams.deviceConfiguration, "Hello, preview tile!")
+            )
+                .build()
+        }
+    )
 }
