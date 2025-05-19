@@ -29,6 +29,8 @@
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
 
+        <!-- Add HelloWorldTileService here -->
+
         <service
             android:name="com.example.wear.tiles.messaging.tile.MessagingTileService"
             android:description="@string/tile_description"
