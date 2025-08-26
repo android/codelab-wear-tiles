@@ -59,17 +59,17 @@ dependencies {
     implementation "androidx.concurrent:concurrent-futures-ktx:1.1.0"
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    def protoLayoutVersion = '1.3.0-beta02'
+    def protoLayoutVersion = '1.3.0'
     implementation "androidx.wear.protolayout:protolayout:$protoLayoutVersion"
     implementation "androidx.wear.protolayout:protolayout-expression:$protoLayoutVersion"
     implementation "androidx.wear.protolayout:protolayout-material3:$protoLayoutVersion"
-    def tilesVersion = '1.5.0-beta02'
+    def tilesVersion = '1.5.0'
     implementation "androidx.wear.tiles:tiles:$tilesVersion"
     debugImplementation "androidx.wear.tiles:tiles-tooling:$tilesVersion"
     debugImplementation "androidx.wear.tiles:tiles-tooling-preview:$tilesVersion"
     debugImplementation "androidx.wear:wear-tooling-preview:1.0.0"
     implementation 'androidx.wear:wear:1.3.0'
-    def horologistVersion = '0.7.12-alpha'
+    def horologistVersion = '0.7.15'
     implementation "com.google.android.horologist:horologist-compose-tools:$horologistVersion"
     implementation "com.google.android.horologist:horologist-tiles:$horologistVersion"
     implementation 'io.coil-kt:coil-compose:2.6.0'
