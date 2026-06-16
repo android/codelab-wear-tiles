@@ -41,8 +41,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     namespace 'com.example.wear.tiles'
 }
@@ -77,6 +77,7 @@ dependencies {
 
 kotlin {
     compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
         freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
         freeCompilerArgs.add("-opt-in=com.google.android.horologist.tiles.ExperimentalHorologistTilesApi")
         freeCompilerArgs.add("-opt-in=com.google.android.horologist.compose.tools.ExperimentalHorologistComposeToolsApi")
